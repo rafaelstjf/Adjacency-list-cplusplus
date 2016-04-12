@@ -14,7 +14,7 @@ void ListaAdjacencia::inicio()
 }
 void ListaAdjacencia::proximoNo()//avanca o ponteiro aux ate o ultimo no
 {
-    if(aux->consultaProxNo()!= NULL)
+    if(aux != NULL)
     {
         aux = aux->consultaProxNo();
     }
@@ -40,7 +40,7 @@ bool ListaAdjacencia::existeIdNo(int id)
     while(aux->consultaId() != id)
     {
         proximoNo();
-        if(aux->consultaProxNo() == NULL)
+        if(aux == NULL)
         {
             return false;
         }
@@ -58,14 +58,13 @@ void ListaAdjacencia::inserePri(int val) //insere um novo No no inicio
 }
 void ListaAdjacencia::insereUlt(int val) //insere um novo No no fim da lista
 {
-    inicio();
-
     if(prim == NULL)
     {
         inserePri(val);
     }
     else
     {
+        inicio();
         while(aux->consultaProxNo() != NULL)
         {
             proximoNo();
@@ -81,37 +80,38 @@ void ListaAdjacencia::insereUlt(int val) //insere um novo No no fim da lista
 }
 void ListaAdjacencia::adicionaAresta(int ini, int fim)//adiciona aresta
 {
-    inicio();
-    procuraIdNo(ini);
-    if(aux->consultaAresta() != NULL)//verifica se ja tem algum bloco no vertice
+    if(existeIdNo(ini) && existeIdNo(fim))
     {
-        Bloco* n = new Bloco();
-        n = aux->consultaAresta();
-        while(n->consultaProx() != NULL)//adiciona novo bloco no final do anterior
+        procuraIdNo(ini);
+        if(aux->consultaAresta() != NULL)//verifica se ja tem algum bloco no vertice
         {
-            n = aux->consultaAresta()->consultaProx();
+            Bloco* n = new Bloco();
+            n = aux->consultaAresta();
+            while(n->consultaProx() != NULL)//adiciona novo bloco no final do anterior
+            {
+                n = aux->consultaAresta()->consultaProx();
+            }
+            Bloco* f = new Bloco();
+            f->atribId(fim);
+            f->atribProx(NULL);
+            n->atribProx(f);
         }
-        Bloco* f = new Bloco();
-        f->atribId(fim);
-        f->atribProx(NULL);
-        n->atribProx(f);
-    }
-    else
-    {
-        Bloco* f = new Bloco();
-        f->atribId(fim);
-        f->atribProx(NULL);
-        aux->atribAresta(f);
-    }
+        else
+        {
+            Bloco* f = new Bloco();
+            f->atribId(fim);
+            f->atribProx(NULL);
+            aux->atribAresta(f);
+        }
 
-
+    }
 }
 
 void ListaAdjacencia::imprimeLista()
 {
     inicio();
     Bloco* blocoAux = new Bloco();
-    while(aux->consultaProxNo() != NULL)
+    while(aux != NULL)
     {
         cout << "Vertice ID: " << aux->consultaId();
         if(aux->consultaAresta() != NULL)
@@ -154,4 +154,29 @@ int ListaAdjacencia::calcGrauNo(int id)
         return grau;
     }
 
+}
+ListaAdjacencia::~ListaAdjacencia()//destrutor
+{
+    No* p = prim;
+    Bloco* baux1 = new Bloco();
+    Bloco* baux2 = new Bloco();
+    while(p != NULL)
+    {
+        No *t = p->consultaProxNo();
+        if(p->consultaAresta()!=NULL)
+        {
+            baux1=p->consultaAresta();
+            while(baux1!=NULL)
+            {
+                baux2 = baux1->consultaProx();
+                delete baux1;
+                baux1 = baux2;
+            }
+        }
+        cout << "Vertice " << p->consultaId() <<" e suas arestas sendo apagado" << endl;
+        delete p;
+        p = t;
+
+    }
+    cout << "Grafo apagado!";
 }
