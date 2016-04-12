@@ -1,20 +1,23 @@
 #ifndef LISTAADJACENCIA_H_INCLUDED
 #define LISTAADJACENCIA_H_INCLUDED
+#include "Bloco.h"
 #include "No.h"
-#include "Cabeca.h"
 class ListaAdjacencia
 {
 private:
-    Cabeca* prim; //primeira cabeca da lista
-    Cabeca* aux; //ponteiro auxiliar para navegacao na lista
+    No* prim; //primeiro no da lista
+    No* aux; //ponteiro auxiliar para navegacao na lista
 public:
     ListaAdjacencia();//construtor
-    void inicio(); //coloca aux apontando para a primeira cabeca
-    void proximaCabeca();//avanca o ponteiro aux para a proxima cabeca
-    void inserePri(int val);//insere uma cabeca na posicao inicial da lista
-    void insereUlt(int val);//insere uma cabeca no final da lista
-    void adicionarLigacao(int ini, int fim);
+    void inicio(); //coloca aux apontando para a primeiro no
+    void proximoNo();//avanca o ponteiro aux para a proximo no
+    void inserePri(int val);//insere um no na posicao inicial da lista
+    void insereUlt(int val);//insere um no no final da lista
+    void adicionaAresta(int ini, int fim);//adiciona uma aresta/arco passando como parametros o vertice inicial e o final
+    void procuraIdNo(int id);//redireciona o aux para o no com o id desejado
+    bool existeIdNo(int id);
     void imprimeLista();//imprime a lista
+    int  calcGrauNo(int vertice);//calcula e retorna o grau do vertice
     ~ListaAdjacencia();//destrutor
 };
 

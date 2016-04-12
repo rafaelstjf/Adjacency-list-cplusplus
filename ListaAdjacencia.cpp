@@ -2,7 +2,7 @@
 #include "ListaAdjacencia.h"
 
 using namespace std;
-ListaAdjacencia::ListaAdjacencia()
+ListaAdjacencia::ListaAdjacencia()//construtor
 {
     prim = NULL;
     aux = NULL;
@@ -12,74 +12,96 @@ void ListaAdjacencia::inicio()
 {
     aux = prim;
 }
-void ListaAdjacencia::proximaCabeca()
+void ListaAdjacencia::proximoNo()//avanca o ponteiro aux ate o ultimo no
 {
-    if(aux!= NULL)
+    if(aux->consultaProxNo()!= NULL)
     {
-        aux = aux->consultaProxCabeca();
+        aux = aux->consultaProxNo();
+    }
+}
+void ListaAdjacencia::procuraIdNo(int id)//procura o no com o id desejado ateh o ultimo no, caso nao encontrado exibe mensagem de no inexistente
+{
+    inicio();
+    if(existeIdNo(id))
+    {
+        while(aux->consultaId() != id)
+        {
+            proximoNo();
+        }
     }
     else
     {
-        cout << "Erro. Nao ha proxima cabeca" <<endl;
+        cout << "O no de ID: " << id << " nao foi encontrado!" << endl;
     }
 }
-//insercao
-void ListaAdjacencia::inserePri(int val) //insere uma nova Cabeca no inicio
-{
-    Cabeca* c = new Cabeca();
-    c->atribIdCabeca(val);
-    c->atribProx(prim);
-    c->atribLigacao(NULL);
-    prim = c;
-}
-void ListaAdjacencia::insereUlt(int val) //insere uma nova Cabeca no fim da lista
+bool ListaAdjacencia::existeIdNo(int id)
 {
     inicio();
+    while(aux->consultaId() != id)
+    {
+        proximoNo();
+        if(aux->consultaProxNo() == NULL)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+//insercao
+void ListaAdjacencia::inserePri(int val) //insere um novo No no inicio
+{
+    No* c = new No();
+    c->atribIdNo(val);
+    c->atribProx(prim);
+    c->atribAresta(NULL);
+    prim = c;
+}
+void ListaAdjacencia::insereUlt(int val) //insere um novo No no fim da lista
+{
+    inicio();
+
     if(prim == NULL)
     {
         inserePri(val);
     }
     else
     {
-        while(aux->consultaProxCabeca() != NULL)
+        while(aux->consultaProxNo() != NULL)
         {
-            proximaCabeca();
+            proximoNo();
         }
-        Cabeca* c = new Cabeca();
-        c->atribIdCabeca(val);
+        No* c = new No();
+        c->atribIdNo(val);
         c->atribProx(NULL);
-        c->atribLigacao(NULL);
+        c->atribAresta(NULL);
         aux->atribProx(c);
 
     }
 
 }
-void ListaAdjacencia::adicionarLigacao(int ini, int fim)
+void ListaAdjacencia::adicionaAresta(int ini, int fim)//adiciona aresta
 {
     inicio();
-    while(aux->consultaId() != ini)
+    procuraIdNo(ini);
+    if(aux->consultaAresta() != NULL)//verifica se ja tem algum bloco no vertice
     {
-        proximaCabeca();
-    }
-    if(aux->consultaLigacao() != NULL)
-    {
-        No* n = new No();
-        n = aux->consultaLigacao();
-        while(n->consultaProx() != NULL)
+        Bloco* n = new Bloco();
+        n = aux->consultaAresta();
+        while(n->consultaProx() != NULL)//adiciona novo bloco no final do anterior
         {
-            n = aux->consultaLigacao()->consultaProx();
+            n = aux->consultaAresta()->consultaProx();
         }
-        No* f = new No();
+        Bloco* f = new Bloco();
         f->atribId(fim);
         f->atribProx(NULL);
         n->atribProx(f);
     }
     else
     {
-        No* f = new No();
+        Bloco* f = new Bloco();
         f->atribId(fim);
         f->atribProx(NULL);
-        aux->atribLigacao(f);
+        aux->atribAresta(f);
     }
 
 
@@ -88,23 +110,48 @@ void ListaAdjacencia::adicionarLigacao(int ini, int fim)
 void ListaAdjacencia::imprimeLista()
 {
     inicio();
-    No* noaux = new No();
-    while(aux->consultaProxCabeca() != NULL)
+    Bloco* blocoAux = new Bloco();
+    while(aux->consultaProxNo() != NULL)
     {
         cout << "Vertice ID: " << aux->consultaId();
-        if(aux->consultaLigacao() != NULL)
+        if(aux->consultaAresta() != NULL)
         {
-            noaux = aux->consultaLigacao();
-            while(noaux != NULL)
+            blocoAux = aux->consultaAresta();
+            while(blocoAux != NULL)
             {
-                cout << " -> " << noaux->consultaId() << " ";
-                noaux = noaux->consultaProx();
+                cout << " -> " << blocoAux->consultaId() << " ";
+                blocoAux = blocoAux->consultaProx();
             }
 
         }
         cout << endl;
-        proximaCabeca();
-
-
+        proximoNo();
     }
+}
+int ListaAdjacencia::calcGrauNo(int id)
+{
+    int grau=0;
+    if(existeIdNo(id))//verifica se existe o no de ID desejado
+    {
+        procuraIdNo(id);
+        Bloco* blocoAux = new Bloco();
+        if(aux->consultaAresta() != NULL)
+        {
+            blocoAux = aux->consultaAresta();
+            while(blocoAux != NULL)
+            {
+                grau++;
+                blocoAux = blocoAux->consultaProx();
+            }
+
+        }
+        return grau;
+    }
+    else//caso nao encontre o no, exibe mensagem de erro e retorna o grau como 0
+    {
+        cout << "O no de ID: " << id << " nao foi encontrado!" << endl;
+        grau = -1;
+        return grau;
+    }
+
 }

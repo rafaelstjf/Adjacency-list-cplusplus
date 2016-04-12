@@ -13,9 +13,10 @@ int main()
         lista->insereUlt(i+1);
 
     }
-    lista->adicionarLigacao(1,2);
-    lista->adicionarLigacao(1,3);
-    lista->adicionarLigacao(1,4);
-    lista->adicionarLigacao(2,3);
+    lista->adicionaAresta(1,2);
+    lista->adicionaAresta(1,3);
+    lista->adicionaAresta(1,4);
+    lista->adicionaAresta(2,3);
     lista->imprimeLista();
+    cout <<"Grau: " << lista->calcGrauNo(6);
 }

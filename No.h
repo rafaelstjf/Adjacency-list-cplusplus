@@ -1,16 +1,20 @@
 #ifndef NO_H_INCLUDED
 #define NO_H_INCLUDED
+#include "Bloco.h"
 class No
 {
 private:
-    int id; //ID do nó
-    No* proximo; //ponteiro para o proximo no
+    int idNo;
+    Bloco* aresta;
+    No* proxNo;
 public:
     No();
+    void atribIdNo(int val);
+    void atribAresta(Bloco* p);
+    void atribProx(No* c);
     int consultaId();
-    No* consultaProx();
-    void atribId(int id);
-    void atribProx(No* p);
+    Bloco* consultaAresta();
+    No* consultaProxNo();
     ~No();
 };
 

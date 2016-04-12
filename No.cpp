@@ -2,24 +2,33 @@
 #include "No.h"
 using namespace std;
 
-No::No() {
-proximo = NULL;
-} //construtor da classe
-int No::consultaId()//consulta o ID do no
+No::No()//construtor da classe
 {
-    return id;
-
+    proxNo = NULL;
+    aresta = NULL;
 }
-No* No::consultaProx()//consulta o proximo no
+void No::atribIdNo(int p)
 {
-    return proximo;
+    idNo = p;
 }
-void No::atribId(int val)//atribui um novo valor para o ID
+void No::atribAresta(Bloco* p)
 {
-    id = val;
+    aresta = p;
 }
-void No::atribProx(No* p)//atribui um novo no para o ponteiro proximo
+void No::atribProx(No* c)
 {
-    proximo = p;
+    proxNo = c;
 }
-No::~No() {} //destrutor da classe
+int No::consultaId()
+{
+    return idNo;
+}
+Bloco* No::consultaAresta()
+{
+    return aresta;
+}
+No* No::consultaProxNo()
+{
+    return proxNo;
+}
+No::~No() {}//destrutor da classe
