@@ -92,7 +92,8 @@ void ListaAdjacencia::adicionaAresta(int ini, int fim)//adiciona aresta
             n = aux->consultaAresta();
             while(n->consultaProx() != NULL && fim != n->consultaId())//verifica se esta no ultimo bloco e se tem aresta repetida
             {
-                n = aux->consultaAresta()->consultaProx();
+                n = n->consultaProx();
+
             }
             if(fim != n->consultaId())//verifica se o while foi parado por ter aresta repetida
             {
