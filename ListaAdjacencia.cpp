@@ -106,6 +106,7 @@ void ListaAdjacencia::adicionaAresta(int ini, int fim)//adiciona aresta
                 cout << "Aresta (" << ini <<", " << fim<<") ja existente!" << endl;
             }
         }
+        cout << "Aresta (" << ini <<", " << fim<<") criada" <<endl;
     }
 }
 void ListaAdjacencia::imprimeLista()
@@ -163,6 +164,7 @@ void ListaAdjacencia::preencheGrafoCompleto()
             if(j!=i)
             {
                 adicionaAresta(i,j);
+
             }
         }
     }
