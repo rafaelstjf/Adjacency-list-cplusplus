@@ -7,8 +7,8 @@ private:
     Bloco* proximo; //ponteiro para o proximo bloco
 public:
     Bloco();
-    int consultaId();
-    Bloco* consultaProx();
+    int consultarId();
+    Bloco* consultarProx();
     void atribId(int id);
     void atribProx(Bloco* p);
     ~Bloco();

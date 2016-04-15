@@ -6,12 +6,12 @@ Bloco::Bloco()//construtor da classe
 {
     proximo = NULL;
 }
-int Bloco::consultaId()//consulta o ID do bloco
+int Bloco::consultarId()//consultarr o ID do bloco
 {
     return id;
 
 }
-Bloco* Bloco::consultaProx()//consulta o proximo bloco
+Bloco* Bloco::consultarProx()//consultar o proximo bloco
 {
     return proximo;
 }

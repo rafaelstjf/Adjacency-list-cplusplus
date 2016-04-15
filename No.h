@@ -12,9 +12,9 @@ public:
     void atribIdNo(int val);
     void atribAresta(Bloco* p);
     void atribProx(No* c);
-    int consultaId();
-    Bloco* consultaAresta();
-    No* consultaProxNo();
+    int consultarId();
+    Bloco* consultarAresta();
+    No* consultarProxNo();
     ~No();
 };
 

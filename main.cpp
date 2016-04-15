@@ -10,19 +10,11 @@ int main()
     cin >> qntVertices;
     for(int i = 0; i<qntVertices; i++)
     {
-        lista->insereUlt(i+1);
-
+        lista->inserirUlt(i+1);
     }
-    lista->preencheGrafoCompleto();
-    lista->procuraIdNo(7);
-    /*lista->adicionaAresta(1,2);
-    lista->adicionaAresta(1,3);
-    lista->adicionaAresta(1,4);
-    lista->adicionaAresta(1,5);
-    lista->adicionaAresta(2,1);
-    lista->adicionaAresta(2,2);*/
-    lista->imprimeLista();
-    cout <<"Grau: " << lista->calcGrauNo(6) << endl;
+    lista->preencherGrafoCompleto();
+    lista->imprimirLista();
+    cout <<"Grau do no 6: " << lista->calcGrauNo(6) << endl;
     delete lista;
 
 }

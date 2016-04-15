@@ -19,15 +19,15 @@ void No::atribProx(No* c)
 {
     proxNo = c;
 }
-int No::consultaId()
+int No::consultarId()
 {
     return idNo;
 }
-Bloco* No::consultaAresta()
+Bloco* No::consultarAresta()
 {
     return aresta;
 }
-No* No::consultaProxNo()
+No* No::consultarProxNo()
 {
     return proxNo;
 }
