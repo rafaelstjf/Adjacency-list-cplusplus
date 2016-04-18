@@ -15,6 +15,7 @@ int main()
     lista->preencherGrafoCompleto();
     lista->imprimirLista();
     cout <<"Grau do no 6: " << lista->calcGrauNo(6) << endl;
+    cout << "Grau do grafo: " << lista->calcGrauGrafo() <<endl;
     delete lista;
 
 }

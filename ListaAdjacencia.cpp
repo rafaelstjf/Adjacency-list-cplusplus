@@ -20,31 +20,49 @@ void ListaAdjacencia::proximoNo()//avanca o ponteiro aux ate o ultimo no
         aux = aux->consultarProxNo();
     }
 }
+bool ListaAdjacencia::ListaVazia()
+{
+    if(prim == NULL)
+        return true;
+    else return false;
+}
 bool ListaAdjacencia::existeIdNo(int id)
 {
-    inicio();
-    while(aux->consultarId() != id)
+
+    if(!ListaVazia())
     {
-        proximoNo();
-        if(aux == NULL)
+        inicio();
+        while(aux->consultarId() != id)
         {
-            return false;
+            proximoNo();
+            if(aux == NULL)
+            {
+                return false;
+            }
         }
+        return true;
     }
-    return true;
+    else return false;
+
 }
 void ListaAdjacencia::procurarIdNo(int id)//procurar o no com o id desejado ateh o ultimo no, caso nao encontrado exibe mensagem de no inexistente
 {
-    inicio();
-    while(aux->consultarId() != id)
+
+    if(!ListaVazia())
     {
-        proximoNo();
-        if(aux==NULL)
+        inicio();
+        while(aux->consultarId() != id)
         {
-            cout << "O no de ID: " << id << " nao foi encontrado!" << endl;
-            break;
+            proximoNo();
+            if(aux==NULL)
+            {
+                cout << "O no de ID: " << id << " nao foi encontrado!" << endl;
+                break;
+            }
         }
     }
+    else
+        cout << "Lista vazia!" << endl;
 
 }
 //manipulacao
@@ -107,7 +125,7 @@ void ListaAdjacencia::adicionarAresta(int ini, int fim)//adiciona aresta
                 cout << "Aresta (" << ini <<", " << fim<<") ja existente!" << endl;
             }
         }
-        cout << "Aresta (" << ini <<", " << fim<<") criada" <<endl;
+        // cout << "Aresta (" << ini <<", " << fim<<") criada" <<endl;
     }
 }
 void ListaAdjacencia::imprimirLista() //imprime a lista
@@ -169,6 +187,18 @@ void ListaAdjacencia::preencherGrafoCompleto()
             }
         }
     }
+}
+int ListaAdjacencia::calcGrauGrafo()//calcula o grau do grafo; Grau do grafo = grau do maior no
+{
+    int grauGrafo = -1;
+    for(int i = 0; i<tamanho; i++)
+    {
+        if(grauGrafo <=calcGrauNo(i+1))
+        {
+            grauGrafo  = calcGrauNo(i+1);
+        }
+    }
+    return grauGrafo;
 }
 ListaAdjacencia::~ListaAdjacencia()//destrutor
 {

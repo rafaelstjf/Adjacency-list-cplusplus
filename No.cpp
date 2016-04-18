@@ -6,7 +6,7 @@ No::No()//construtor da classe
 {
     proxNo = NULL;
     aresta = NULL;
-}
+    }
 void No::atribIdNo(int p)
 {
     idNo = p;
