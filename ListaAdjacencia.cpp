@@ -2,10 +2,11 @@
 #include "ListaAdjacencia.h"
 using namespace std;
 
-ListaAdjacencia::ListaAdjacencia()//construtor
+ListaAdjacencia::ListaAdjacencia(bool tipo)//construtor
 {
     prim = NULL;
     aux = NULL;
+    orientada = tipo;
     tamanho = 0;
 }
 //navegacao
@@ -92,63 +93,60 @@ void ListaAdjacencia::inserirUlt(int val) //insere um novo No no fim da lista
         tamanho++;
     }
 }
-void ListaAdjacencia::adicionarAresta(int ini, int fim)//adiciona aresta
+Bloco* ListaAdjacencia::criarBloco(int id, Bloco* prox)
 {
-    if(existeIdNo(ini) && existeIdNo(fim))
+    Bloco* b = new Bloco();
+    b->atribId(id);
+    b->atribProx(prox);
+    return b;
+}
+void ListaAdjacencia::adicionarArco(int ini, int fim)
+{
+    procurarIdNo(ini);
+    if(aux->consultarAresta() == NULL)//verifica se ja tem algum bloco no vertice
     {
-        procurarIdNo(ini);
-        if(aux->consultarAresta() == NULL)//verifica se ja tem algum bloco no vertice
+        aux->atribAresta(criarBloco(fim, NULL));
+        aux->atribGrauNo(aux->consultarGrauNo() + 1);
+    }
+    else
+    {
+        Bloco* n;
+        n = aux->consultarAresta();
+        while(n->consultarProx() != NULL && fim != n->consultarId())//verifica se esta no ultimo bloco e se tem aresta repetida
         {
-            Bloco* f = new Bloco();
-            f->atribId(fim);
-            f->atribProx(NULL);
-            aux->atribAresta(f);
+            n = n->consultarProx();
+
+        }
+        if(fim != n->consultarId())//verifica se o while foi parado por ter aresta repetida
+        {
+            n->atribProx(criarBloco(fim, NULL));
             aux->atribGrauNo(aux->consultarGrauNo() + 1);
         }
         else
         {
-            Bloco* n = new Bloco();
-            n = aux->consultarAresta();
-            while(n->consultarProx() != NULL && fim != n->consultarId())//verifica se esta no ultimo bloco e se tem aresta repetida
-            {
-                n = n->consultarProx();
-
-            }
-            if(fim != n->consultarId())//verifica se o while foi parado por ter aresta repetida
-            {
-                Bloco* f = new Bloco();//adicionar novo bloco no final do anterior
-                f->atribId(fim);
-                f->atribProx(NULL);
-                n->atribProx(f);
-                aux->atribGrauNo(aux->consultarGrauNo() + 1);
-            }
+            if(orientada)
+                cout << "Arco (" << ini <<", " << fim<<") ja existente!" << endl;
             else
             {
-                cout << "Aresta (" << ini <<", " << fim<<") ja existente!" << endl;
+                //cout << "Aresta (" << ini <<", " << fim<<") ja existente!" << endl;
             }
         }
-        // cout << "Aresta (" << ini <<", " << fim<<") criada" <<endl;
     }
 }
-void ListaAdjacencia::imprimirLista() //imprime a lista
+void ListaAdjacencia::adicionarAresta(int ini, int fim)//adiciona aresta
 {
-    inicio();
-    Bloco* blocoAux = new Bloco();
-    while(aux != NULL)
+    if(existeIdNo(ini) && existeIdNo(fim))
     {
-        cout << "Vertice ID: " << aux->consultarId();
-        if(aux->consultarAresta() != NULL)
+        if(orientada)
+            adicionarArco(ini, fim);
+        else
         {
-            blocoAux = aux->consultarAresta();
-            while(blocoAux != NULL)
-            {
-                cout << "-> " << blocoAux->consultarId() << " ";
-                blocoAux = blocoAux->consultarProx();
-            }
+            adicionarArco(ini,fim);
+            adicionarArco(fim, ini);
+
         }
-        cout << endl;
-        proximoNo();
     }
+
 }
 int ListaAdjacencia::calcGrauNo(int id)
 {
@@ -173,7 +171,6 @@ void ListaAdjacencia::preencherGrafoCompleto()
             if(j!=i)
             {
                 adicionarAresta(i,j);
-
             }
         }
     }
@@ -189,6 +186,26 @@ int ListaAdjacencia::calcGrauGrafo()//calcula o grau do grafo; Grau do grafo = g
         }
     }
     return grauGrafo;
+}
+void ListaAdjacencia::imprimirLista() //imprime a lista
+{
+    inicio();
+    Bloco* blocoAux = new Bloco();
+    while(aux != NULL)
+    {
+        cout << "Vertice ID: " << aux->consultarId();
+        if(aux->consultarAresta() != NULL)
+        {
+            blocoAux = aux->consultarAresta();
+            while(blocoAux != NULL)
+            {
+                cout << "-> " << blocoAux->consultarId() << " ";
+                blocoAux = blocoAux->consultarProx();
+            }
+        }
+        cout << endl;
+        proximoNo();
+    }
 }
 ListaAdjacencia::~ListaAdjacencia()//destrutor
 {
