@@ -103,6 +103,7 @@ void ListaAdjacencia::adicionarAresta(int ini, int fim)//adiciona aresta
             f->atribId(fim);
             f->atribProx(NULL);
             aux->atribAresta(f);
+            aux->atribGrauNo(aux->consultarGrauNo() + 1);
         }
         else
         {
@@ -119,6 +120,7 @@ void ListaAdjacencia::adicionarAresta(int ini, int fim)//adiciona aresta
                 f->atribId(fim);
                 f->atribProx(NULL);
                 n->atribProx(f);
+                aux->atribGrauNo(aux->consultarGrauNo() + 1);
             }
             else
             {
@@ -150,27 +152,15 @@ void ListaAdjacencia::imprimirLista() //imprime a lista
 }
 int ListaAdjacencia::calcGrauNo(int id)
 {
-    int grau=0;
     if(existeIdNo(id))//verifica se existe o no de ID desejado
     {
         procurarIdNo(id);
-        Bloco* blocoAux = new Bloco();
-        if(aux->consultarAresta() != NULL)
-        {
-            blocoAux = aux->consultarAresta();
-            while(blocoAux != NULL)
-            {
-                grau++;
-                blocoAux = blocoAux->consultarProx();
-            }
-        }
-        return grau;
+        return aux->consultarGrauNo();
     }
     else//caso nao encontre o no, exibe mensagem de erro e retorna o grau como 0
     {
         cout << "O no de ID: " << id << " nao foi encontrado!" << endl;
-        grau = -1;
-        return grau;
+        return -1;
     }
 
 }

@@ -4,7 +4,7 @@
 class No
 {
 private:
-    int idNo;
+    int idNo, grauNo;
     Bloco* aresta;
     No* proxNo;
 public:
@@ -12,9 +12,11 @@ public:
     void atribIdNo(int val);
     void atribAresta(Bloco* p);
     void atribProx(No* c);
+    void atribGrauNo(int grau);
     int consultarId();
     Bloco* consultarAresta();
     No* consultarProxNo();
+    int consultarGrauNo();
     ~No();
 };
 

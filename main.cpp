@@ -12,7 +12,7 @@ int main()
     {
         lista->inserirUlt(i+1);
     }
-    lista->preencherGrafoCompleto();
+   //lista->preencherGrafoCompleto();
     lista->imprimirLista();
     cout <<"Grau do no 6: " << lista->calcGrauNo(6) << endl;
     cout << "Grau do grafo: " << lista->calcGrauGrafo() <<endl;
