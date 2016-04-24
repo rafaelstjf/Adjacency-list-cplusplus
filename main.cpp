@@ -5,7 +5,7 @@ using namespace std;
 int main()
 {
     int qntVertices = 0;
-    char opcao = NULL;
+    char opcao = ' ';
     ListaAdjacencia* lista;
     cout << "O grafo eh orientado? (y/n)" << endl;
     cin >> opcao;
@@ -29,7 +29,6 @@ int main()
     {
         lista->inserirUlt(i+1);
     }
-    lista->preencherGrafoCompleto();
     lista->imprimirLista();
     cout <<"Grau do no 6: " << lista->calcGrauNo(6) << endl;
     cout << "Grau do grafo: " << lista->calcGrauGrafo() <<endl;

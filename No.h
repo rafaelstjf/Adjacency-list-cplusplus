@@ -9,14 +9,14 @@ private:
     No* proxNo;
 public:
     No();
-    void atribIdNo(int val);
-    void atribAresta(Bloco* p);
-    void atribProx(No* c);
-    void atribGrauNo(int grau);
-    int consultarId();
-    Bloco* consultarAresta();
-    No* consultarProxNo();
-    int consultarGrauNo();
+    void atribIdNo(int val);//atribui um novo Id para o No
+    void atribAresta(Bloco* p);//coloca o ponteiro aresta apontando para a primeira das ligações
+    void atribProx(No* c);//coloca o ponteiro proxNo apontando para um outro No
+    void atribGrauNo(int grau);//atribui um valor para o grau do No
+    int consultarId();//consulta o Id do No
+    Bloco* consultarAresta();//Consulta o Bloco aresta
+    No* consultarProxNo();//consulta o proximo No
+    int consultarGrauNo();//consulta o grau do No
     ~No();
 };
 

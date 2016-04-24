@@ -10,24 +10,24 @@ ListaAdjacencia::ListaAdjacencia(bool tipo)//construtor
     tamanho = 0;
 }
 //navegacao
-void ListaAdjacencia::inicio()
+void ListaAdjacencia::inicio()//coloca o ponteiro auxiliar apontando para o primeiro No da lista
 {
     aux = prim;
 }
-void ListaAdjacencia::proximoNo()//avanca o ponteiro aux ate o ultimo no
+void ListaAdjacencia::proximoNo()//avanca o ponteiro auxiliar ate o ultimo No
 {
     if(aux != NULL)
     {
         aux = aux->consultarProxNo();
     }
 }
-bool ListaAdjacencia::ListaVazia()
+bool ListaAdjacencia::ListaVazia()//verifica se a lista esta vazia
 {
     if(prim == NULL)
         return true;
     else return false;
 }
-bool ListaAdjacencia::existeIdNo(int id)
+bool ListaAdjacencia::existeIdNo(int id)//verifica se existe o No do id desejado
 {
 
     if(!ListaVazia())
@@ -46,7 +46,7 @@ bool ListaAdjacencia::existeIdNo(int id)
     else return false;
 
 }
-void ListaAdjacencia::procurarIdNo(int id)//procurar o no com o id desejado ateh o ultimo no, caso nao encontrado exibe mensagem de no inexistente
+void ListaAdjacencia::procurarIdNo(int id)//faz o ponteiro auxiliar apontar para o No de id desejado
 {
 
     if(!ListaVazia())
@@ -93,20 +93,20 @@ void ListaAdjacencia::inserirUlt(int val) //insere um novo No no fim da lista
         tamanho++;
     }
 }
-Bloco* ListaAdjacencia::criarBloco(int id, Bloco* prox)
+Bloco* ListaAdjacencia::criarBloco(int id, Bloco* prox)//cria um novo bloco
 {
     Bloco* b = new Bloco();
     b->atribId(id);
     b->atribProx(prox);
     return b;
 }
-void ListaAdjacencia::adicionarArco(int ini, int fim)
+void ListaAdjacencia::adicionarArco(int ini, int fim)//adiciona um novo arco
 {
     procurarIdNo(ini);
     if(aux->consultarAresta() == NULL)//verifica se ja tem algum bloco no vertice
     {
         aux->atribAresta(criarBloco(fim, NULL));
-        aux->atribGrauNo(aux->consultarGrauNo() + 1);
+        aux->atribGrauNo(aux->consultarGrauNo() + 1);//aumenta o grau do No
     }
     else
     {
@@ -126,14 +126,10 @@ void ListaAdjacencia::adicionarArco(int ini, int fim)
         {
             if(orientada)
                 cout << "Arco (" << ini <<", " << fim<<") ja existente!" << endl;
-            else
-            {
-                //cout << "Aresta (" << ini <<", " << fim<<") ja existente!" << endl;
-            }
         }
     }
 }
-void ListaAdjacencia::adicionarAresta(int ini, int fim)//adiciona aresta
+void ListaAdjacencia::adicionarAresta(int ini, int fim)//verifica o tipo de grafo e adiciona uma aresta/arco
 {
     if(existeIdNo(ini) && existeIdNo(fim))
     {
@@ -143,7 +139,6 @@ void ListaAdjacencia::adicionarAresta(int ini, int fim)//adiciona aresta
         {
             adicionarArco(ini,fim);
             adicionarArco(fim, ini);
-
         }
     }
 
@@ -162,7 +157,7 @@ int ListaAdjacencia::calcGrauNo(int id)
     }
 
 }
-void ListaAdjacencia::preencherGrafoCompleto()
+void ListaAdjacencia::preencherGrafoCompleto()//preenche todas as arestas de maneira a criar o grafo completo
 {
     for(int i=1; i<=tamanho; i++)
     {

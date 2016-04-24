@@ -1,13 +1,13 @@
 #ifndef LISTAADJACENCIA_H_INCLUDED
 #define LISTAADJACENCIA_H_INCLUDED
-#include "Bloco.h"
-#include "No.h"
+#include "Bloco.h"//classe onde as ligacoes sao armazenadas
+#include "No.h"//classe do No
 class ListaAdjacencia
 {
 private:
     No* prim; //primeiro no da lista
     No* aux; //ponteiro auxiliar para navegacao na lista
-    int tamanho;
+    int tamanho;//tamanho da lista
     bool orientada;//caso true eh um digrafo caso false eh um grafo
 public:
     ListaAdjacencia(bool tipo);//construtor
@@ -22,10 +22,10 @@ public:
     Bloco* criarBloco(int id, Bloco* prox);
     void adicionarAresta(int ini, int fim);//verifica o tipo de grafo e adiciona uma aresta/arco passando como parametros o vertice inicial e o final
     void adicionarArco(int ini, int fim);//adiciona um arco
-    void preencherGrafoCompleto();//preencher todas as arestas de maneira a criar o grafo completo
+    void preencherGrafoCompleto();//preenche todas as arestas de maneira a criar o grafo completo
     void imprimirLista();//imprimir a lista
-    int calcGrauNo(int vertice);//calcula e retorna o grau do vertice
-    int calcGrauGrafo();
+    int calcGrauNo(int vertice);//retorna o grau do vertice
+    int calcGrauGrafo();//calcula o grau do grafo
     ~ListaAdjacencia();//destrutor
 };
 
