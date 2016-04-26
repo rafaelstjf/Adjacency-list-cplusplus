@@ -1,10 +1,33 @@
 #include <iostream>
 #include "ListaAdjacencia.h"
 using namespace std;
+void teste(){
+int tamanho = 100;
+char opcao = false;
+ListaAdjacencia* lista = new ListaAdjacencia(opcao);
+for(int i = 0; i<tamanho; i++){
+lista->inserirUlt(i+1);
+}
+/*lista->adicionarAresta(1,1);
+lista->adicionarAresta(1,1);
+lista->adicionarAresta(1,4);
+lista->adicionarAresta(1,3);
+lista->adicionarAresta(1,2);*/
+cout << "Grau no 1: "<< lista->grauNo(1);
+cout << "Grau do grafo: " << lista->grauGrafo();
+if(lista->verificarAdjacencia(1,7))
+cout << "true"<< endl;
+else cout << "false" << endl;
+lista->listarAdjacentesNo(1);
+if(lista->verificarKRegular() != -1)
+cout << "O grafo eh "<< lista->verificarKRegular() << " regular!"<< endl;
+delete lista;
 
+
+}
 int main()
 {
-    int qntVertices = 0;
+    /*int qntVertices = 0;
     char opcao = ' ';
     ListaAdjacencia* lista;
     cout << "O grafo eh orientado? (y/n)" << endl;
@@ -29,9 +52,11 @@ int main()
     {
         lista->inserirUlt(i+1);
     }
-    lista->imprimirLista();
-    cout <<"Grau do no 6: " << lista->calcGrauNo(6) << endl;
-    cout << "Grau do grafo: " << lista->calcGrauGrafo() <<endl;
-    delete lista;
+    cout <<"Grau do no 6: " << lista->grauNo(6) << endl;
+    cout << "Grau do grafo: " << lista->grauGrafo() <<endl;
+delete lista;*/
+teste();
+
+    
 
 }

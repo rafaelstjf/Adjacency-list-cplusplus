@@ -9,6 +9,7 @@ private:
     No* aux; //ponteiro auxiliar para navegacao na lista
     int tamanho;//tamanho da lista
     bool orientada;//caso true eh um digrafo caso false eh um grafo
+    void adicionar(int ini, int fim);//adiciona um arco
 public:
     ListaAdjacencia(bool tipo);//construtor
     //navegacao
@@ -17,15 +18,17 @@ public:
     void inserirUlt(int val);//inserir um no no final da lista
     void procurarIdNo(int id);//redireciona o aux para o no com o id desejado
     bool existeIdNo(int id);//verifica se existe o no do id desejado
-    bool ListaVazia();//verifica se a lista esta vazia --prevencao de erros
+    bool listaVazia();//verifica se a lista esta vazia --prevencao de erros
+    bool verificarAdjacencia(int id1, int id2);//verifica se os Nós são adjacentes
+    int verificarKRegular();//dado um k verifica se o grafo eh k regular
     //manipulacao
     Bloco* criarBloco(int id, Bloco* prox);
     void adicionarAresta(int ini, int fim);//verifica o tipo de grafo e adiciona uma aresta/arco passando como parametros o vertice inicial e o final
-    void adicionarArco(int ini, int fim);//adiciona um arco
-    void preencherGrafoCompleto();//preenche todas as arestas de maneira a criar o grafo completo
-    void imprimirLista();//imprimir a lista
-    int calcGrauNo(int vertice);//retorna o grau do vertice
-    int calcGrauGrafo();//calcula o grau do grafo
+   // void preencherGrafoCompleto();//preenche todas as arestas de maneira a criar o grafo completo
+    //void imprimirLista();//imprimir a lista
+    void listarAdjacentesNo(int id);//imprime os nós adjacentes ao Nó desejado
+    int grauNo(int id);//retorna o grau do vertice
+    int grauGrafo();//calcula o grau do grafo
     ~ListaAdjacencia();//destrutor
 };
 

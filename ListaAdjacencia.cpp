@@ -1,4 +1,4 @@
-#include "iostream"
+#include <iostream>
 #include "ListaAdjacencia.h"
 using namespace std;
 
@@ -21,7 +21,7 @@ void ListaAdjacencia::proximoNo()//avanca o ponteiro auxiliar ate o ultimo No
         aux = aux->consultarProxNo();
     }
 }
-bool ListaAdjacencia::ListaVazia()//verifica se a lista esta vazia
+bool ListaAdjacencia::listaVazia()//verifica se a lista esta vazia
 {
     if(prim == NULL)
         return true;
@@ -30,7 +30,7 @@ bool ListaAdjacencia::ListaVazia()//verifica se a lista esta vazia
 bool ListaAdjacencia::existeIdNo(int id)//verifica se existe o No do id desejado
 {
 
-    if(!ListaVazia())
+    if(!listaVazia())
     {
         inicio();
         while(aux->consultarId() != id)
@@ -49,7 +49,7 @@ bool ListaAdjacencia::existeIdNo(int id)//verifica se existe o No do id desejado
 void ListaAdjacencia::procurarIdNo(int id)//faz o ponteiro auxiliar apontar para o No de id desejado
 {
 
-    if(!ListaVazia())
+    if(!listaVazia())
     {
         inicio();
         while(aux->consultarId() != id)
@@ -100,7 +100,7 @@ Bloco* ListaAdjacencia::criarBloco(int id, Bloco* prox)//cria um novo bloco
     b->atribProx(prox);
     return b;
 }
-void ListaAdjacencia::adicionarArco(int ini, int fim)//adiciona um novo arco
+void ListaAdjacencia::adicionar(int ini, int fim)//adiciona um novo arco
 {
     procurarIdNo(ini);
     if(aux->consultarAresta() == NULL)//verifica se ja tem algum bloco no vertice
@@ -131,19 +131,19 @@ void ListaAdjacencia::adicionarArco(int ini, int fim)//adiciona um novo arco
 }
 void ListaAdjacencia::adicionarAresta(int ini, int fim)//verifica o tipo de grafo e adiciona uma aresta/arco
 {
-    if(existeIdNo(ini) && existeIdNo(fim))
+    if(existeIdNo(ini) && existeIdNo(fim) && ini!=fim)
     {
         if(orientada)
-            adicionarArco(ini, fim);
+            adicionar(ini, fim);
         else
         {
-            adicionarArco(ini,fim);
-            adicionarArco(fim, ini);
+            adicionar(ini,fim);
+            adicionar(fim, ini);
         }
     }
 
 }
-int ListaAdjacencia::calcGrauNo(int id)
+int ListaAdjacencia::grauNo(int id)
 {
     if(existeIdNo(id))//verifica se existe o no de ID desejado
     {
@@ -157,7 +157,110 @@ int ListaAdjacencia::calcGrauNo(int id)
     }
 
 }
-void ListaAdjacencia::preencherGrafoCompleto()//preenche todas as arestas de maneira a criar o grafo completo
+int ListaAdjacencia::grauGrafo()//calcula o grau do grafo; Grau do grafo = grau do maior no
+{
+    int grauGrafo = -1;
+    for(int i = 0; i<tamanho; i++)
+    {
+        if(grauGrafo <=grauNo(i+1))
+        {
+            grauGrafo  = grauNo(i+1);
+        }
+    }
+    return grauGrafo;
+}
+bool ListaAdjacencia::verificarAdjacencia(int id1, int id2)
+{
+    if(existeIdNo(id1) && existeIdNo(id2))
+    {
+        procurarIdNo(id1);
+        if(aux->consultarAresta() != NULL)
+        {
+            Bloco* n;
+            n = aux->consultarAresta();
+            while(n->consultarProx() != NULL && id2 != n->consultarId())//verifica se esta no ultimo bloco e se tem aresta repetida
+            {
+                n = n->consultarProx();
+
+            }
+            if(id2 != n->consultarId())//verifica se o while foi parado por ter aresta repetida
+            {
+                return true;
+            }
+        }
+        return false;
+
+    }
+    else
+        return false;
+}
+void ListaAdjacencia::listarAdjacentesNo(int id)
+{
+    if(existeIdNo(id))
+    {
+        procurarIdNo(id);
+        Bloco* blocoAux;
+        cout << "No ID: " << aux->consultarId();
+        if(aux->consultarAresta() != NULL)
+        {
+            blocoAux = aux->consultarAresta();
+            while(blocoAux != NULL)
+            {
+                cout << "-> " << blocoAux->consultarId() << " ";
+                blocoAux = blocoAux->consultarProx();
+            }
+            cout << endl;
+        }
+    }
+    else
+        cout << "O no de ID: " << id << " nao foi encontrado!" << endl;
+}
+int ListaAdjacencia::verificarKRegular()
+{
+    if(!listaVazia())
+    {
+        inicio();
+        int k = aux->consultarGrauNo();
+        while(aux!= NULL && aux->consultarGrauNo() == k)
+        {
+            proximoNo();
+        }
+        if(aux->consultarGrauNo() != k)
+        {
+            cout << "O grafo nao eh K-regular" << endl;
+            return -1;
+        }
+        else
+            return k;
+    }
+    else return -1;
+}
+ListaAdjacencia::~ListaAdjacencia()//destrutor
+{
+    No* p = prim;
+    Bloco* baux1 = new Bloco();
+    Bloco* baux2 = new Bloco();
+    while(p != NULL)
+    {
+        No *t = p->consultarProxNo();
+        if(p->consultarAresta()!=NULL)
+        {
+            baux1=p->consultarAresta();
+            while(baux1!=NULL)
+            {
+                baux2 = baux1->consultarProx();
+                delete baux1;
+                baux1 = baux2;
+            }
+        }
+        delete p;
+        p = t;
+
+    }
+    cout << "Grafo apagado!";
+}
+
+/*void ListaAdjacencia::preencherGrafoCompleto()//preenche todas as arestas de maneira a criar o grafo completo
 {
     for(int i=1; i<=tamanho; i++)
     {
@@ -169,19 +272,6 @@ void ListaAdjacencia::preencherGrafoCompleto()//preenche todas as arestas de man
             }
         }
     }
-}
-int ListaAdjacencia::calcGrauGrafo()//calcula o grau do grafo; Grau do grafo = grau do maior no
-{
-    int grauGrafo = -1;
-    for(int i = 0; i<tamanho; i++)
-    {
-        if(grauGrafo <=calcGrauNo(i+1))
-        {
-            grauGrafo  = calcGrauNo(i+1);
-        }
-    }
-    return grauGrafo;
-}
 void ListaAdjacencia::imprimirLista() //imprime a lista
 {
     inicio();
@@ -202,28 +292,4 @@ void ListaAdjacencia::imprimirLista() //imprime a lista
         proximoNo();
     }
 }
-ListaAdjacencia::~ListaAdjacencia()//destrutor
-{
-    No* p = prim;
-    Bloco* baux1 = new Bloco();
-    Bloco* baux2 = new Bloco();
-    while(p != NULL)
-    {
-        No *t = p->consultarProxNo();
-        if(p->consultarAresta()!=NULL)
-        {
-            baux1=p->consultarAresta();
-            while(baux1!=NULL)
-            {
-                baux2 = baux1->consultarProx();
-                delete baux1;
-                baux1 = baux2;
-            }
-        }
-        cout << "Vertice " << p->consultarId() <<" e suas arestas sendo apagado" << endl;
-        delete p;
-        p = t;
-
-    }
-    cout << "Grafo apagado!";
-}
+}*/
