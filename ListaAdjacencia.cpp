@@ -115,7 +115,36 @@ void ListaAdjacencia::imprimir()
     }
 
 }
+void ListaAdjacencia::removerAresta(int id)
+{
+    if(existeIdAresta(id))
+    {
+        Aresta* a;
+        procurarIdAresta(id);
+        imprimir();
+        if(aux == pri)
+        {
+            pri = aux->getProx();
+            pri->setAnterior(NULL);
 
+        }
+        else if(aux ==ult)
+        {
+            a = aux;
+            aux = a->getAnterior();
+            aux->setProx(NULL);
+            ult = aux;
+
+        }
+        else
+        {
+            a = aux;
+            aux = a->getAnterior();
+            aux->setProx(a->getProx());
+        }
+        imprimir();
+    }
+}
 ListaAdjacencia::~ListaAdjacencia()//destrutor
 {
     Aresta* p = pri;

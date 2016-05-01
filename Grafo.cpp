@@ -71,6 +71,7 @@ void Grafo::inserirNo(int val) //insere um novo No ordenado no fim da lista
         No* c = new No();
         c->setIdNo(val);
         c->setProx(prim);
+        c->setAntNo(NULL);
         prim = c;
         ultimo = c;
         tamanho++;
@@ -87,6 +88,7 @@ void Grafo::inserirNo(int val) //insere um novo No ordenado no fim da lista
             No* c = new No();
             c->setIdNo(val);
             c->setProx(NULL);
+            c->setAntNo(aux);
             aux->setProx(c);
             ultimo = c;
         }
@@ -94,6 +96,8 @@ void Grafo::inserirNo(int val) //insere um novo No ordenado no fim da lista
         {
             No* c = new No();
             c->setIdNo(val);
+            c->setAntNo(aux->getAntNo());
+            aux->setAntNo(c);
             c->setProx(aux);
         }
         tamanho++;
@@ -317,6 +321,23 @@ bool Grafo::verificarGrafoConexo()
             return false;
     }
     return true;
+}
+void Grafo::removerNo(int id)
+{
+    if(existeIdNo(id))
+    {
+        inicio();
+        ListaAdjacencia* l;
+        while(aux!= NULL)
+        {
+            cout << "No: " << aux->getId()<<endl;
+            l = aux->getArestas();
+            if(l != NULL)
+                l->removerAresta(id);
+            proximoNo();
+        }
+
+    }
 }
 Grafo::~Grafo()//destrutor
 {

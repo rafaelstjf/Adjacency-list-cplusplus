@@ -16,6 +16,4 @@ public:
     void setProx(Aresta* p);
     ~Aresta();
 };
-
-
 #endif // ARESTA_H_INCLUDED

@@ -17,8 +17,7 @@ public:
    void procurarIdAresta(int id);
    bool existeIdAresta(int id);
    void imprimir();
+   void removerAresta(int id);
     ~ListaAdjacencia();
 };
-
-
 #endif // ARESTA_H_INCLUDED

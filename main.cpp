@@ -36,6 +36,8 @@ void teste()
     if(grafo->verificarGrafoConexo())
         cout << "O grafo eh conexo" << endl;
     else cout << "O grafo nao eh conexo" << endl;
+    grafo->removerNo(3);
+    grafo->imprimirGrafo();
 }
 int main()
 {

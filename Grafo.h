@@ -29,9 +29,8 @@ public:
     int verificarKRegular();//verifica se o grafo eh k regular
     bool verificarGrafoCompleto();//verifica se um grafo eh completo
     bool verificarGrafoConexo();//verifica se o grafo eh conexo
+    void removerNo(int id);//remove um determinado no
 
     ~Grafo();//destrutor
 };
-
-
 #endif // GRAFO_H_INCLUDED

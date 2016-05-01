@@ -5,6 +5,7 @@ using namespace std;
 Aresta::Aresta()//construtor da classe
 {
     proximo = NULL;
+    id = 0;
 	anterior = NULL;
 }
 int Aresta::getId()//getr o ID do Aresta
