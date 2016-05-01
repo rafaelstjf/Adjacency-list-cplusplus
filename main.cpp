@@ -36,7 +36,14 @@ void teste()
     if(grafo->verificarGrafoConexo())
         cout << "O grafo eh conexo" << endl;
     else cout << "O grafo nao eh conexo" << endl;
-    grafo->removerNo(3);
+    if(grafo->verificarNoArticulacao(1))
+        cout << "O vertice 1 eh de articulacao" << endl;
+    else
+        cout << "O vertice 1 nao eh de articulacao" << endl;
+    grafo->removerNo(1);
+    if(grafo->verificarGrafoConexo())
+        cout << "O grafo eh conexo" << endl;
+    else cout << "O grafo nao eh conexo" << endl;
     grafo->imprimirGrafo();
 }
 int main()

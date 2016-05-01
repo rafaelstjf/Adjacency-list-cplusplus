@@ -3,6 +3,7 @@
 #include "No.h"
 class Grafo
 {
+    friend class Grafo;
 private:
     No* prim; //primeiro no da lista
     No* aux; //ponteiro auxiliar para navegacao na lista
@@ -10,6 +11,8 @@ private:
     int tamanho;
     bool orientada;//caso true eh um digrafo caso false eh um grafo
     void adicionarArco(int ini, int fim);//adiciona um arco
+    bool verificarNoArticulacaoAux(Grafo* g, int id);//funcao auxiliar
+    Grafo* clonarGrafo();//faz uma copia do grafo atual
 public:
     Grafo(bool tipo);//construtor
     void inicio(); //coloca aux apontando para a primeiro no
@@ -30,6 +33,7 @@ public:
     bool verificarGrafoCompleto();//verifica se um grafo eh completo
     bool verificarGrafoConexo();//verifica se o grafo eh conexo
     void removerNo(int id);//remove um determinado no
+    bool verificarNoArticulacao(int id);//verifica se um dado no eh de articulacao
 
     ~Grafo();//destrutor
 };

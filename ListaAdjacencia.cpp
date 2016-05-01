@@ -121,14 +121,13 @@ void ListaAdjacencia::removerAresta(int id)
     {
         Aresta* a;
         procurarIdAresta(id);
-        imprimir();
-        if(aux == pri)
+        if(aux == pri && aux !=ult)
         {
             pri = aux->getProx();
             pri->setAnterior(NULL);
 
         }
-        else if(aux ==ult)
+        else if(aux ==ult && aux!=pri)
         {
             a = aux;
             aux = a->getAnterior();
@@ -136,13 +135,16 @@ void ListaAdjacencia::removerAresta(int id)
             ult = aux;
 
         }
-        else
+        else if(aux == pri && aux == ult)
+        {
+            pri = NULL;
+            ult = NULL;
+        }else
         {
             a = aux;
             aux = a->getAnterior();
             aux->setProx(a->getProx());
         }
-        imprimir();
     }
 }
 ListaAdjacencia::~ListaAdjacencia()//destrutor

@@ -324,21 +324,90 @@ bool Grafo::verificarGrafoConexo()
 }
 void Grafo::removerNo(int id)
 {
+    ListaAdjacencia* l;
     if(existeIdNo(id))
     {
         inicio();
-        ListaAdjacencia* l;
         while(aux!= NULL)
         {
-            cout << "No: " << aux->getId()<<endl;
             l = aux->getArestas();
             if(l != NULL)
                 l->removerAresta(id);
             proximoNo();
         }
+        procurarIdNo(id);
+        No* n;
+        if(aux == prim && aux !=ultimo)
+        {
+            prim = aux->getProxNo();
+            prim->setAntNo(NULL);
+
+        }
+        else if(aux ==ultimo && aux!=prim)
+        {
+            n = aux;
+            aux = n->getAntNo();
+            aux->setProx(ultimo);
+            ultimo = aux;
+
+        }
+        else if(aux == prim && aux == ultimo)
+        {
+            prim = NULL;
+            ultimo = NULL;
+        }
+        else
+        {
+            n = aux;
+            aux = n->getAntNo();
+            aux->setProx(n->getProxNo());
+        }
+    }
+}
+Grafo* Grafo::clonarGrafo()
+{
+    Grafo* g = new Grafo(orientada);
+    Aresta* arestaAux;
+    int a;
+    inicio();
+    while(aux!=NULL)
+    {
+        g->inserirNo(aux->getId());
+        proximoNo();
+    }
+    inicio();
+    while(aux!=NULL)
+    {
+        aux->getArestas()->inicio();
+        arestaAux = aux->getArestas()->getAux() ;
+        while(arestaAux !=  NULL)
+        {
+            a = arestaAux->getId();
+            g->adicionarAresta(aux->getId(), a);
+            aux->getArestas()->proximaAresta();
+            arestaAux = aux->getArestas()->getAux() ;
+        }
+        proximoNo();
 
     }
 }
+bool Grafo::verificarNoArticulacao(int id)
+{
+    Grafo* g = clonarGrafo();
+    if(verificarNoArticulacaoAux(g,id))
+        return true;
+    else
+        return false;
+}
+bool Grafo::verificarNoArticulacaoAux(Grafo* grafo, int id)
+{
+    Grafo* g = grafo;
+    if(g->verificarGrafoConexo())
+        return true;
+    else
+        return false;
+}
+
 Grafo::~Grafo()//destrutor
 {
     No* p = prim;
