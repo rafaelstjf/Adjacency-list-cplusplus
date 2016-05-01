@@ -407,7 +407,63 @@ bool Grafo::verificarNoArticulacaoAux(Grafo* grafo, int id)
     else
         return false;
 }
+bool Grafo::verificarGrafoBipartido() //problemas
+{
+    stack<int> pilha;
+    int id = 0;
+    bool flag = true;
+    bool grupo[tamanho];
+    ListaAdjacencia* lista;
+    Aresta* arestaAux;
+    for(int i = 0; i < tamanho; i++)//atribui a todos os indices o estado de nao visitados
+        grupo[i] = 0;
+    inicio();
+    while(flag)
+    {
+        id = (aux->getId() - 1);
+        if(grupo[id] == 0)
+        {
+            if(id == 0)
+                grupo[id]=1;
+            else
+                grupo[id] = (-1)*grupo[(pilha.top()-1)];
+            pilha.push(id+1);
+        }
+        else if(grupo[id] != (-1)*grupo[(pilha.top()-1)])
+            return false;
+        lista = aux->getArestas();
+        if(lista != NULL)
+        {
+            arestaAux = lista->getAux();
+            while(lista!= NULL && grupo[(arestaAux->getId()-1)] != 0)
+            {
 
+                lista->proximaAresta();
+                 arestaAux = lista->getAux();
+
+            }
+            if(lista == NULL)
+            {
+                pilha.pop();
+                if(pilha.empty())
+                    flag = true;
+                else
+                    procurarIdNo(pilha.top());
+            }
+            else
+                procurarIdNo(lista->getAux()->getId());
+        }
+        else
+        {
+            pilha.pop();
+            if(pilha.empty())
+                flag = true;
+            else
+                procurarIdNo(pilha.top());
+        }
+    }
+    return true;
+}
 Grafo::~Grafo()//destrutor
 {
     No* p = prim;

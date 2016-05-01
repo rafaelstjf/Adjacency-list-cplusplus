@@ -5,13 +5,13 @@ class Aresta
 private:
     int id; //ID do bloco
     Aresta* proximo; //ponteiro para o proximo bloco
-	Aresta* anterior;
+    Aresta* anterior;
 public:
     Aresta();
     int getId();
     Aresta* getProx();
     void setId(int id);
-	Aresta* getAnterior();
+    Aresta* getAnterior();
     void setAnterior(Aresta* c);
     void setProx(Aresta* p);
     ~Aresta();
