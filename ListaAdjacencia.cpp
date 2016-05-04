@@ -32,7 +32,7 @@ bool ListaAdjacencia::existeIdAresta(int id)
     if(!listaVazia())
     {
         procurarIdAresta(id);
-        if(aux!= NULL && aux->getId())
+        if(aux!= NULL && aux->getId() == id)
             return true;
         else
             return false;
@@ -76,21 +76,19 @@ void ListaAdjacencia::inserir(int val)
     }
     else
     {
-        inicio();
-        while(aux->getProx() != NULL && aux->getId() != val)
+        if(!existeIdAresta(val))
         {
-            proximaAresta();
-        }
-            if(aux->getId() == val)
-                cout << "ja existe esta aresta" << endl;
-            else
+            inicio();
+            while(aux->getProx() != NULL)
             {
-                c->setId(val);
-                c->setProx(NULL);
-                c->setAnterior(aux);
-                aux->setProx(c);
-                ult = c;
+                proximaAresta();
             }
+            c->setId(val);
+            c->setProx(NULL);
+            c->setAnterior(aux);
+            aux->setProx(c);
+            ult = c;
+        }
     }
 }
 void ListaAdjacencia::imprimir()

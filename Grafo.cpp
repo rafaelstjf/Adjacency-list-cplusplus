@@ -11,7 +11,7 @@ Grafo::Grafo(int tam, bool tipo)//construtor
     orientada = tipo;
     tamanho = 0;
     for(int  i = 0; i<tam; i++)
-        inserirNo(i+1);
+        inserirNo(i);
 }
 //navegacao
 void Grafo::inicio()
@@ -167,9 +167,9 @@ int Grafo::grauNo(int id)
 }
 void Grafo::preencherGrafoCompleto()
 {
-    for(int i=1; i<=tamanho; i++)
+    for(int i=0; i<tamanho; i++)
     {
-        for(int j=1; j<=tamanho; j++)
+        for(int j=0; j<tamanho; j++)
         {
             if(j!=i)
             {
@@ -224,7 +224,7 @@ bool Grafo::verificarAdjacencia(int id1, int id2)//verifica se existe uma aresta
         else
             return false;
     }
-        return false;
+    return false;
 }
 void Grafo::listarAdjacentesNo(int id) //imprime os adjacentes do No de Id desejado
 {
@@ -271,44 +271,44 @@ bool Grafo::verificarGrafoCompleto() //um grafo completo eh um grafo n-1 regular
 }
 bool Grafo::verificarGrafoConexo()
 {
-    limpaVisitados();
+    ListaAdjacencia* l;
     inicio();
-    while(aux!= NULL)
+    bool visitados[tamanho];
+    for(int i =0; i<tamanho; i++)
+        visitados[i] = false;
+    stack<int> pilha;
+    int numVis = 1;
+    int ant = 0;
+    visitados[aux->getId()] = true;
+    pilha.push(aux->getId());
+    while(!pilha.empty())
     {
-        if(aux->getVisitado() == false)
-            verificarGrafoConexoAux(aux);
-        proximoNo();
-    }
-    inicio();
-    while(aux!=NULL)
-    {
-        if(aux->getVisitado()==true)
-            proximoNo();
-        else
+        cout << "Aux: "<< aux->getId() << endl;
+        cout << "Pilha top: " <<pilha.top() << endl;
+        procurarIdNo(pilha.top());
+        ant = aux->getId();
+        pilha.pop();
+        l = aux->getArestas();
+        if(l!=NULL){
+        l->inicio();
+        while(l->getAux()!= NULL)
         {
-            return false;
-            break;
-
-        }
-    }
-    return true;
-}
-void Grafo::verificarGrafoConexoAux(No* v)
-{
-    ListaAdjacencia* l = NULL;
-    v->setVisitado(true);
-    if(v->getArestas()!=NULL)
-    {
-        l = v->getArestas();
-        while(l->getAux() != NULL)
-        {
-            procurarIdNo(l->getAux()->getId());
-            if(aux->getVisitado() == false)
-                verificarGrafoConexoAux( aux);
+            if(!visitados[l->getAux()->getId()] && l->getAux()->getId() != ant)
+            {
+                visitados[l->getAux()->getId()] = true;
+                numVis++;
+                pilha.push(l->getAux()->getId());
+            }
             l->proximaAresta();
         }
     }
+    }
+    if(numVis == tamanho)
+        return true;
+    else
+        return false;
 }
+
 void Grafo::removerNo(int id)
 {
     ListaAdjacencia* l = NULL;
@@ -365,8 +365,9 @@ bool Grafo::verificarGrafoBipartido()
     while(aux!=NULL)
     {
         temporario = aux;
-        if(vertice[aux->getId()-1]== -1)
-        {//chama o bipartidoaux para cada no do grafo
+        if(vertice[aux->getId()]== -1)
+        {
+            //chama o bipartidoaux para cada no do grafo
             if(bipartidoAux(temporario, vertice, 0)== 0) return false;//se o bipartidoaux retornar grupo repetido entao nao eh bipartido
             aux = temporario;
         }
@@ -376,20 +377,20 @@ bool Grafo::verificarGrafoBipartido()
 }
 bool Grafo::bipartidoAux(No* n, int vertice[], int c)
 {
-    vertice[n->getId()-1] = 1-c;
+    vertice[n->getId()] = 1-c;
     ListaAdjacencia* l = aux->getArestas();
     if(l!=NULL)
     {
         l->inicio();
         while(l->getAux()!= NULL)
         {
-            if(vertice[l->getAux()->getId()-1] == -1)
+            if(vertice[l->getAux()->getId()] == -1)
             {
                 procurarIdNo(l->getAux()->getId());
                 if(bipartidoAux(aux, vertice,1-c ) == false) return false;
             }
-            else if(vertice[l->getAux()->getId()-1] == 1-c) return false;
-                        l->proximaAresta();
+            else if(vertice[l->getAux()->getId()] == 1-c) return false;
+            l->proximaAresta();
 
         }
         return true;
@@ -475,12 +476,8 @@ Grafo* Grafo::grafoInduzido(int tam, int vet[])
 bool Grafo::verificarNoArticulacao(int idBusca)
 {
 
-
 }
-void verificarNoArticulacaoAux(No* v)
-{
-
-}
+bool Grafo::verificarArestaPonte(int ini, int fim) {}
 Grafo::~Grafo()//destrutor
 {
     No* p = prim;

@@ -33,10 +33,10 @@ void teste()
     if(grafo->verificarGrafoConexo())
         cout << "O grafo eh conexo" << endl;
     else cout << "O grafo nao eh conexo" << endl;
-    /* if(grafo->verificarNoArticulacao(6))
-       cout << "O vertice 1 eh de articulacao" << endl;
-      else
-      cout << "O vertice 1 nao eh de articulacao" << endl;*/
+    if(grafo->verificarNoArticulacao(5))
+        cout << "O vertice 1 eh de articulacao" << endl;
+    else
+        cout << "O vertice 1 nao eh de articulacao" << endl;
     if(grafo->verificarGrafoBipartido())
         cout << "o grafo eh bipartido" << endl;
     else
@@ -103,10 +103,61 @@ int obterTamanhoGrafo()
     }
     return tamanho;
 }
+Grafo* preencherArestas(Grafo* g)
+{
+    string str;
+    inputFile.clear(); //volta o estado para good
+    inputFile.seekg(0, ios::beg); //volta ao inicio
+    getline(inputFile, str);//pega a linha do arquivo
+    char tempIni[5], tempFim[5];//vetor temporario
+    int ini = 0, fim = 0, j = 0, contadorEspaco = 0;
+    for(int k = 0; k<5; k++) //colocando null em todos os indices do vetor temporario
+    {
+        tempIni[k] = NULL;
+        tempFim[k] = NULL;
+    }
+    while(inputFile.good())
+    {
+    for(int i =0; str[i]!= '\0';i++)
+            str[i] = NULL;
+        getline(inputFile, str);//pega a linha do arquivo
+        for(int i = 0; str[i]!= '\0'; i++)
+        {
+            if(str[i] == ' ')
+                contadorEspaco++;
+            if(contadorEspaco == 0)
+                tempIni[j] = str[i];
+            if(contadorEspaco == 1 && ini == 0)
+            {
+                ini = atoi(tempIni);
+                j = 0;
+            }
+            if(contadorEspaco == 1 && fim == 0)
+                tempFim[j] = str[i];
+            j++;
+        }
+        fim = atoi(tempFim);
+        g->adicionarAresta(ini, fim);
+        contadorEspaco = 0;
+        fim = 0;
+        ini = 0;
+        j = 0;
+        for(int k = 0; k<5; k++) //colocando null em todos os indices do vetor temporario
+        {
+            tempIni[k] = NULL;
+            tempFim[k] = NULL;
+        }
+    }
+    return g;
+}
 int main(int argc, char * argv [])
 {
-    /*Grafo* grafo;
+    Grafo* grafo = NULL;
     int tamanho  = 0, opcaoEscolhida = -1;
+    int id = 0, ini = 0, fim = 0, tam = -1;
+    int vet[tam];
+    Grafo* gInduzido;
+    Grafo* gComp;
     cout <<"\t\t\tTrabalho de Teoria dos grafos." << endl;
     if (argc == 3)
     {
@@ -133,17 +184,17 @@ int main(int argc, char * argv [])
     cout << "Criando grafo a partir do arquivo. "<< endl;
     tamanho = obterTamanhoGrafo();
     grafo = new Grafo(tamanho, false);
+    grafo = preencherArestas(grafo);
     cout << "Grafo criado com sucesso!" << endl;
     cout << "----------------------------------"<< endl;
     menu();
-    while(opcaoEscolhida<1 && opcaoEscolhida>14)
+    while(opcaoEscolhida<1 || opcaoEscolhida>14)
     {
         cin >> opcaoEscolhida;
-        if(opcaoEscolhida<1 && opcaoEscolhida>14)
+        if(opcaoEscolhida<1 || opcaoEscolhida>14)
             cout << "Opcao invalida! digite novamente." << endl;
     }
-    int id = 0;
-    int tam = -1;
+
     switch (opcaoEscolhida)
     {
     case 1:
@@ -206,10 +257,10 @@ int main(int argc, char * argv [])
             if(tam<0)
                 cout << "Tamanho invalido! Digite novamente." << endl;
         }
-        int vet[tam];
+
         for(int i = 0; i<tam; i++)
         {
-            cout << "Digite o " << i <<"º vertice." << endl;
+            cout << "Digite o vertice." << endl;
             cin >> vet[i];
             while(vet[i] < 0)
             {
@@ -217,7 +268,7 @@ int main(int argc, char * argv [])
                 cin >> vet[i];
             }
         }
-        Grafo* gInduzido  = grafo->grafoInduzido(tam, vet);
+        gInduzido  = grafo->grafoInduzido(tam, vet);
         gInduzido->exibirGrafo();
         break;
     case 10:
@@ -228,18 +279,18 @@ int main(int argc, char * argv [])
             cout << "Vertice invalido! Digite novamente." << endl;
             cin >> id;
         }
-        if(grafo->verificarNoArticulacao(int id))
+        if(grafo->verificarNoArticulacao(id))
             cout << "O vertice "<< id <<" eh de articulacao." << endl;
         else
             cout << "O vertice "<< id <<" nao eh de articulacao." << endl;
         break;
     case 11:
-        Grafo* gComp = grafo->grafoComplementar();
+        gComp = grafo->grafoComplementar();
         gComp->exibirGrafo();
         break;
     case 12:
         cout << "Digite o vertice inicial." << endl;
-        int ini =0;
+        ini =0;
         cin >> ini;
         while(ini < 0)
         {
@@ -247,7 +298,7 @@ int main(int argc, char * argv [])
             cin >> ini;
         }
         cout << "Digite o vertice final" << endl;
-        int fim =0;
+        fim =0;
         cin >> fim;
         while(fim < 0)
         {
@@ -261,7 +312,7 @@ int main(int argc, char * argv [])
         break;
     case 13:
         cout << "Digite o primeiro vertice." << endl;
-        int ini =0;
+        ini =0;
         cin >> ini;
         while(ini < 0)
         {
@@ -269,7 +320,7 @@ int main(int argc, char * argv [])
             cin >> ini;
         }
         cout << "Digite o segundo vertice." << endl;
-        int fim =0;
+        fim =0;
         cin >> fim;
         while(fim < 0)
         {
@@ -284,9 +335,11 @@ int main(int argc, char * argv [])
     case 14:
         exit(0);
         break;
+
+    default:
+        exit(0);
     }
-    return 0;*/
-    teste();
+
 }
 /*Codigos dos erros
     -1 = erro na abertura dos arquivos

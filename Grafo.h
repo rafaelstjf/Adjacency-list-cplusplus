@@ -13,7 +13,6 @@ private:
     void proximoNo();//avanca o ponteiro aux para a proximo no
     void procurarIdNo(int id);//redireciona o aux para o no com o id desejado
     void adicionarArco(int ini, int fim);//adiciona um arco
-    void verificarGrafoConexoAux(No* v);//funcao auxiliar
     void limpaVisitados();//coloca todos os nos como nao visitados
     bool bipartidoAux(No* n, int vertice[], int c);
 public:
@@ -37,7 +36,7 @@ public:
     bool verificarGrafoBipartido(); //verifica se o grafo eh bipartido
     bool verificarArestaPonte(int ini, int fim);//verifica se a aresta desejada eh uma ponte
     Grafo* grafoComplementar();//retorna o grafo complementar
-    Grafo* grafoInduzido(int tam, int vet[]);
+    Grafo* grafoInduzido(int tam, int vet[]);//retorna o grafo induzido
 
     ~Grafo();//destrutor
 };
