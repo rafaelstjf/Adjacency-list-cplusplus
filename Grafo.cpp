@@ -355,19 +355,10 @@ void Grafo::removerNo(int id)
         delete n;
     }
 }
-bool Grafo::verificarNoArticulacao(int idBusca)
+bool Grafo::verificarGrafoBipartido()
 {
-
-
-}
-void verificarNoArticulacaoAux(No* v)
-{
-
-}
-bool Grafo::verificarGrafoBipartido() //problemas
-{
-    No* temporario;
-    int vertice[tamanho];
+    No* temporario = NULL;
+    int vertice[tamanho];//cria um vetor com os grupos
     for(int i =0; i<tamanho; i++)
         vertice[i] = -1;
     inicio();
@@ -375,8 +366,8 @@ bool Grafo::verificarGrafoBipartido() //problemas
     {
         temporario = aux;
         if(vertice[aux->getId()-1]== -1)
-        {
-            if(bipartidoAux(aux, vertice, 0)== false) return false;
+        {//chama o bipartidoaux para cada no do grafo
+            if(bipartidoAux(temporario, vertice, 0)== 0) return false;//se o bipartidoaux retornar grupo repetido entao nao eh bipartido
             aux = temporario;
         }
         proximoNo();
@@ -392,13 +383,14 @@ bool Grafo::bipartidoAux(No* n, int vertice[], int c)
         l->inicio();
         while(l->getAux()!= NULL)
         {
-            l->proximaAresta();
             if(vertice[l->getAux()->getId()-1] == -1)
             {
                 procurarIdNo(l->getAux()->getId());
                 if(bipartidoAux(aux, vertice,1-c ) == false) return false;
             }
             else if(vertice[l->getAux()->getId()-1] == 1-c) return false;
+                        l->proximaAresta();
+
         }
         return true;
     }
@@ -479,6 +471,15 @@ Grafo* Grafo::grafoInduzido(int tam, int vet[])
     else
         g = new Grafo(0, orientada);
     return g;
+}
+bool Grafo::verificarNoArticulacao(int idBusca)
+{
+
+
+}
+void verificarNoArticulacaoAux(No* v)
+{
+
 }
 Grafo::~Grafo()//destrutor
 {

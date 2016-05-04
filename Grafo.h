@@ -35,6 +35,7 @@ public:
     void removerNo(int id);//remove um determinado no
     bool verificarNoArticulacao(int id);//verifica se um dado no eh de articulacao
     bool verificarGrafoBipartido(); //verifica se o grafo eh bipartido
+    bool verificarArestaPonte(int ini, int fim);//verifica se a aresta desejada eh uma ponte
     Grafo* grafoComplementar();//retorna o grafo complementar
     Grafo* grafoInduzido(int tam, int vet[]);
 
