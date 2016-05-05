@@ -36,7 +36,7 @@ int obterTamanhoGrafo()
     getline(inputFile, str);//pega a primeira linha do arquivo
     while (str[i] != '\0') //enquanto nao chega ao fim do string
     {
-        if(str[i] == ' ' || str[i + 1] == '\0')//verifica se o caractere eh o espaco ou o final da linha
+        if(str[i] == ' ' || str[i + 1] == '\0')//verifica se o caractere é o espaco ou o final da linha
         {
             //limpa os numeros apos a parada
             if( str[i + 1] == '\0')
@@ -162,16 +162,10 @@ int main(int argc, char * argv [])
     grafo = preencherArestas(grafo);
     cout << "Grafo criado com sucesso!" << endl;
     cout << "----------------------------------"<< endl;
-
     while(true)
     {
         menu();
         cin >> opcaoEscolhida;
-        while(opcaoEscolhida<1 || opcaoEscolhida>14)
-        {
-            if(opcaoEscolhida<1 || opcaoEscolhida>14)
-                cout << "Opcao invalida! digite novamente." << endl;
-        }
         switch (opcaoEscolhida)
         {
         case 1:
@@ -192,14 +186,20 @@ int main(int argc, char * argv [])
                 cout << "Vertice invalido! Digite novamente." << endl;
                 cin >> id;
             }
-            cout << " O grau do vertice " << id << " eh: " << grafo->grauNo(id) << endl;
+            cout << "O grau do vertice " << id << " eh: " << grafo->grauNo(id) << endl;
             if(desejaSalvar())
-                outputFile << " O grau do vertice " << id << " eh: " << grafo->grauNo(id) << endl;
+            {
+                outputFile << "\n";
+                outputFile << "O grau do vertice " << id << " eh: " << grafo->grauNo(id) << endl;
+            }
             break;
         case 3:
-            cout << "O grau do grafo eh: " << grafo->grauGrafo();
+            cout << "O grau do grafo eh: " << grafo->grauGrafo() << endl;
             if(desejaSalvar())
-                outputFile << "O grau do grafo eh: " << grafo->grauGrafo();
+            {
+                outputFile << "\n";
+                outputFile << "O grau do grafo eh: " << grafo->grauGrafo() << endl;
+            }
             break;
         case 4:
             cout << "Digite o vertice desejado." << endl;
@@ -211,20 +211,29 @@ int main(int argc, char * argv [])
             }
             cout << grafo->listarAdjacentesNo(id) << endl;
             if(desejaSalvar())
+            {
+                outputFile << "\n";
                 outputFile << grafo->listarAdjacentesNo(id) << endl;
+            }
             break;
         case 5:
             if(grafo->verificarKRegular()== -1)
             {
                 cout << "O grafo nao eh K-regular." << endl;
                 if(desejaSalvar())
+                {
+                    outputFile << "\n";
                     outputFile << "O grafo nao eh K-regular." << endl;
+                }
             }
             else
             {
                 cout << "O grafo eh "<<grafo->verificarKRegular() <<"-regular." << endl;
                 if(desejaSalvar())
+                {
+                    outputFile << "\n";
                     outputFile << "O grafo eh "<<grafo->verificarKRegular() <<"-regular." << endl;
+                }
             }
             break;
         case 6:
@@ -232,13 +241,19 @@ int main(int argc, char * argv [])
             {
                 cout << "O grafo eh completo." << endl;
                 if(desejaSalvar())
+                {
+                    outputFile << "\n";
                     outputFile << "O grafo eh completo." << endl;
+                }
             }
             else
             {
                 cout << "O grafo nao eh completo." << endl;
                 if(desejaSalvar())
+                {
+                    outputFile << "\n";
                     outputFile << "O grafo nao eh completo." << endl;
+                }
             }
             break;
         case 7:
@@ -246,13 +261,19 @@ int main(int argc, char * argv [])
             {
                 cout << "O grafo eh conexo." << endl;
                 if(desejaSalvar())
+                {
+                    outputFile << "\n";
                     outputFile << "O grafo eh conexo." << endl;
+                }
             }
             else
             {
                 cout << "O grafo nao eh conexo." << endl;
                 if(desejaSalvar())
+                {
+                    outputFile << "\n";
                     outputFile << "O grafo nao eh conexo." << endl;
+                }
             }
             break;
         case 8:
@@ -260,13 +281,19 @@ int main(int argc, char * argv [])
             {
                 cout << "O grafo eh bipartido." << endl;
                 if(desejaSalvar())
+                {
+                    outputFile << "\n";
                     outputFile << "O grafo eh bipartido." << endl;
+                }
             }
             else
             {
                 cout << "O grafo nao eh bipartido." << endl;
                 if(desejaSalvar())
+                {
+                    outputFile << "\n";
                     outputFile << "O grafo nao eh bipartido." << endl;
+                }
             }
             break;
         case 9:
@@ -294,6 +321,16 @@ int main(int argc, char * argv [])
             cout << gInduzido->exibirGrafo() << endl;
             if(desejaSalvar())
             {
+                outputFile << "\n";
+                outputFile << "Vertices escolhidos: [";
+                for(int i = 0; i<tam; i++)
+                {
+                    if(i!=tam-1)
+                        outputFile << vet[i] << ", ";
+                    else
+                        outputFile << vet[i];
+                }
+                outputFile << "]" << endl;
                 outputFile << "Grafo induzido: " << endl;
                 outputFile << gInduzido->exibirGrafo() << endl;
             }
@@ -311,13 +348,19 @@ int main(int argc, char * argv [])
             {
                 cout << "O vertice "<< id <<" eh de articulacao." << endl;
                 if(desejaSalvar())
+                {
+                    outputFile << "\n";
                     outputFile <<  "O vertice "<< id <<" eh de articulacao." << endl;
+                }
             }
             else
             {
                 cout << "O vertice "<< id <<" nao eh de articulacao." << endl;
                 if(desejaSalvar())
+                {
+                    outputFile << "\n";
                     outputFile <<  "O vertice "<< id <<" nao eh de articulacao." << endl;
+                }
             }
             break;
         case 11:
@@ -326,6 +369,7 @@ int main(int argc, char * argv [])
             cout << gComp->exibirGrafo();
             if(desejaSalvar())
             {
+                outputFile << "\n";
                 outputFile << "Grafo complementar: " << endl;
                 outputFile << gComp->exibirGrafo() << endl;
             }
@@ -350,15 +394,21 @@ int main(int argc, char * argv [])
             }
             if(grafo->verificarArestaPonte(ini, fim))
             {
-                cout << "A aresta (" << ini << "," << fim << ") eh de articulacao." << endl;
+                cout << "A aresta (" << ini << "," << fim << ") eh ponte." << endl;
                 if(desejaSalvar())
-                    outputFile << "A aresta (" << ini << "," << fim << ") eh de articulacao." << endl;
+                {
+                    outputFile << "\n";
+                    outputFile << "A aresta (" << ini << "," << fim << ") eh ponte." << endl;
+                }
             }
             else
             {
-                cout << "A aresta (" << ini << "," << fim << ") nao eh de articulacao." << endl;
+                cout << "A aresta (" << ini << "," << fim << ") nao eh ponte." << endl;
                 if(desejaSalvar())
-                    outputFile <<  "A aresta (" << ini << "," << fim << ") nao eh de articulacao." << endl;
+                {
+                    outputFile << "\n";
+                    outputFile <<  "A aresta (" << ini << "," << fim << ") nao eh ponte." << endl;
+                }
             }
             break;
         case 13:
@@ -383,14 +433,20 @@ int main(int argc, char * argv [])
 
                 cout << "Os vertices (" << ini << "," << fim << ") sao adjacentes." << endl;
                 if(desejaSalvar())
+                {
+                    outputFile << "\n";
                     outputFile <<  "Os vertices (" << ini << "," << fim << ") sao adjacentes." << endl;
+                }
             }
             else
             {
 
                 cout << "Os vertices (" << ini << "," << fim << ") nao sao adjacentes." << endl;
                 if(desejaSalvar())
+                {
+                    outputFile << "\n";
                     outputFile <<   "Os vertices (" << ini << "," << fim << ") nao sao adjacentes." << endl;
+                }
             }
             break;
         case 14:
@@ -401,6 +457,10 @@ int main(int argc, char * argv [])
             break;
 
         default:
+            cout << "Opcao invalida! Saindo do programa." << endl;
+            outputFile.close();
+            inputFile.close();
+            delete grafo;
             exit(0);
         }
 
