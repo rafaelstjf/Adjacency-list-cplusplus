@@ -1,5 +1,7 @@
 #ifndef ARESTA_H_INCLUDED
 #define ARESTA_H_INCLUDED
+#include <iostream>
+using namespace std;
 class Aresta
 {
 private:

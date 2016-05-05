@@ -1,6 +1,4 @@
-#include "iostream"
 #include "ListaAdjacencia.h"
-using namespace std;
 
 ListaAdjacencia::ListaAdjacencia()//construtor
 {
@@ -91,16 +89,6 @@ void ListaAdjacencia::inserir(int val)
         }
     }
 }
-void ListaAdjacencia::imprimir()
-{
-    inicio();
-    while(aux != NULL)
-    {
-        cout << "-> " << aux->getId() << " ";
-        proximaAresta();
-    }
-
-}
 void ListaAdjacencia::removerAresta(int id)
 {
     Aresta* a = NULL;
@@ -108,12 +96,11 @@ void ListaAdjacencia::removerAresta(int id)
     {
         inicio();
         procurarIdAresta(id);
+        a = aux;
         if(aux == pri && aux !=ult)
         {
             pri = aux->getProx();
             pri->setAnterior(NULL);
-            delete aux;
-
         }
         else if(aux ==ult && aux!=pri)
         {
@@ -121,7 +108,6 @@ void ListaAdjacencia::removerAresta(int id)
             aux = aux->getAnterior();
             aux->setProx(NULL);
             ult = aux;
-            delete a;
 
         }
         else if(aux == pri && aux == ult)
@@ -133,8 +119,11 @@ void ListaAdjacencia::removerAresta(int id)
         else if(aux!= pri && aux != ult)
         {
             a = aux;
-            aux = aux->getAnterior();
+            aux = a->getAnterior();
             aux->setProx(a->getProx());
+            Aresta* aux2 = a->getProx();
+            aux2->setAnterior(aux);
+
         }
         delete a;
     }

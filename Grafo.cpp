@@ -1,17 +1,13 @@
-#include "iostream"
 #include "Grafo.h"
-#include "ListaAdjacencia.h"
-#include <stack>
+
 using namespace std;
-Grafo::Grafo(int tam, bool tipo)//construtor
+Grafo::Grafo(bool tipo)//construtor
 {
     prim = NULL;
     aux = NULL;
     ultimo = NULL;
     orientada = tipo;
-    tamanho = 0;
-    for(int  i = 0; i<tam; i++)
-        inserirNo(i);
+    ordem = 0;
 }
 //navegacao
 void Grafo::inicio()
@@ -55,14 +51,10 @@ void Grafo::procurarIdNo(int id)//procurar o no com o id desejado ateh o ultimo 
             proximoNo();
             if(aux==NULL)
             {
-                cout << "O no de ID: " << id << " nao foi encontrado!" << endl;
                 break;
             }
         }
     }
-    else
-        cout << "Lista vazia!" << endl;
-
 }
 void Grafo::limpaVisitados()
 {
@@ -85,7 +77,7 @@ void Grafo::inserirNo(int val) //insere um novo No ordenado no fim da lista
         c->setAntNo(NULL);
         prim = c;
         ultimo = c;
-        tamanho++;
+        ordem++;
     }
     else
     {
@@ -94,7 +86,7 @@ void Grafo::inserirNo(int val) //insere um novo No ordenado no fim da lista
         {
             proximoNo();
         }
-        if(aux->getId() <= val)
+        if(aux->getId() < val)
         {
             No* c = new No();
             c->setIdNo(val);
@@ -103,6 +95,8 @@ void Grafo::inserirNo(int val) //insere um novo No ordenado no fim da lista
             aux->setProx(c);
             ultimo = c;
         }
+        else if(aux->getId() == val)
+            cout << "No ja existente!" << endl;
         else
         {
             No* c = new No();
@@ -111,7 +105,7 @@ void Grafo::inserirNo(int val) //insere um novo No ordenado no fim da lista
             aux->setAntNo(c);
             c->setProx(aux);
         }
-        tamanho++;
+        ordem++;
     }
 }
 void Grafo::adicionarArco(int ini, int fim)
@@ -167,9 +161,9 @@ int Grafo::grauNo(int id)
 }
 void Grafo::preencherGrafoCompleto()
 {
-    for(int i=0; i<tamanho; i++)
+    for(int i=0; i<ordem; i++)
     {
-        for(int j=0; j<tamanho; j++)
+        for(int j=0; j<ordem; j++)
         {
             if(j!=i)
             {
@@ -181,7 +175,7 @@ void Grafo::preencherGrafoCompleto()
 int Grafo::grauGrafo()//calcula o grau do grafo; Grau do grafo = grau do maior no
 {
     int grauGrafo = -1;
-    for(int i = 1; i<=tamanho; i++)
+    for(int i = 1; i<=ordem; i++)
     {
         if(grauGrafo <=grauNo(i))
         {
@@ -190,19 +184,29 @@ int Grafo::grauGrafo()//calcula o grau do grafo; Grau do grafo = grau do maior n
     }
     return grauGrafo;
 }
-void Grafo::exibirGrafo() //exibe a lista
+string Grafo::exibirGrafo() //exibe a lista
 {
+    stringstream stream;
     inicio();
     ListaAdjacencia* lbaux;
+    stream << "\n";
     while(aux != NULL)
     {
-        cout << "Vertice ID: " << aux->getId();
-        lbaux = aux->getArestas();
-        if(lbaux!= NULL)
-            lbaux->imprimir();
-        cout << endl;
+        stream << "Vertice ID: " << aux->getId();
+
+        if(aux->getArestas()!= NULL){
+            lbaux = aux->getArestas();
+        lbaux->inicio();
+        while(lbaux->getAux()!= NULL)
+        {
+            stream << "-> " << lbaux->getAux()->getId() << " ";
+            lbaux->proximaAresta();
+        }
+        }
+        stream << "\n";
         proximoNo();
     }
+    return stream.str();
 }
 bool Grafo::verificarAdjacencia(int id1, int id2)//verifica se existe uma aresta ligando os dois Nos desejados
 {
@@ -226,22 +230,32 @@ bool Grafo::verificarAdjacencia(int id1, int id2)//verifica se existe uma aresta
     }
     return false;
 }
-void Grafo::listarAdjacentesNo(int id) //imprime os adjacentes do No de Id desejado
+string Grafo::listarAdjacentesNo(int id) //imprime os adjacentes do No de Id desejado
 {
+    stringstream stream;
+    stream << "\n";
+    ListaAdjacencia* lbaux;
     if(existeIdNo(id))
     {
         procurarIdNo(id);
-        cout << "No ID: " << aux->getId() << " e seus adjacentes." << endl;
-        cout << aux->getId();
-        if(aux->getArestas() != NULL)
-            aux->getArestas()->imprimir();
+        stream << "No ID: " << aux->getId() << " e seus adjacentes.\n";
+        stream << aux->getId();
+        lbaux = aux->getArestas();
+        if(lbaux!= NULL)
+            lbaux->inicio();
+        while(lbaux->getAux()!= NULL)
+        {
+            stream << "->" << lbaux->getAux()->getId() << " ";
+            lbaux->proximaAresta();
+        }
     }
     else
-        cout << "O no de ID: " << id << " nao foi encontrado!" << endl;
+        stream << "O no de ID: " << id << " nao foi encontrado!\n";
+    return stream.str();
 }
 int Grafo::ordemGrafo() // retorna a ordem do grafo (numero de nos)
 {
-    return tamanho;
+    return ordem;
 }
 int Grafo::verificarKRegular()
 {
@@ -264,7 +278,7 @@ int Grafo::verificarKRegular()
 }
 bool Grafo::verificarGrafoCompleto() //um grafo completo eh um grafo n-1 regular, onde n = numero de nos
 {
-    if(verificarKRegular() == (tamanho-1))
+    if(verificarKRegular() == (ordem-1))
         return true;
     else
         return false;
@@ -273,8 +287,8 @@ bool Grafo::verificarGrafoConexo()
 {
     ListaAdjacencia* l;
     inicio();
-    bool visitados[tamanho];
-    for(int i =0; i<tamanho; i++)
+    bool visitados[ordem];
+    for(int i =0; i<ordem; i++)
         visitados[i] = false;
     stack<int> pilha;
     int numVis = 1;
@@ -283,27 +297,26 @@ bool Grafo::verificarGrafoConexo()
     pilha.push(aux->getId());
     while(!pilha.empty())
     {
-        cout << "Aux: "<< aux->getId() << endl;
-        cout << "Pilha top: " <<pilha.top() << endl;
         procurarIdNo(pilha.top());
         ant = aux->getId();
         pilha.pop();
         l = aux->getArestas();
-        if(l!=NULL){
-        l->inicio();
-        while(l->getAux()!= NULL)
+        if(l!=NULL)
         {
-            if(!visitados[l->getAux()->getId()] && l->getAux()->getId() != ant)
+            l->inicio();
+            while(l->getAux()!= NULL)
             {
-                visitados[l->getAux()->getId()] = true;
-                numVis++;
-                pilha.push(l->getAux()->getId());
+                if(!visitados[l->getAux()->getId()] && l->getAux()->getId() != ant)
+                {
+                    visitados[l->getAux()->getId()] = true;
+                    numVis++;
+                    pilha.push(l->getAux()->getId());
+                }
+                l->proximaAresta();
             }
-            l->proximaAresta();
         }
     }
-    }
-    if(numVis == tamanho)
+    if(numVis == ordem)
         return true;
     else
         return false;
@@ -322,11 +335,10 @@ void Grafo::removerNo(int id)
             {
                 l->removerAresta(id);
             }
-
             proximoNo();
         }
         procurarIdNo(id);
-        No* n;
+        No* n = aux;
         if(aux == prim && aux !=ultimo)
         {
             prim = aux->getProxNo();
@@ -335,7 +347,6 @@ void Grafo::removerNo(int id)
         }
         else if(aux == ultimo && aux!=prim)
         {
-            n = aux;
             aux = n->getAntNo();
             aux->setProx(NULL);
             ultimo = aux;
@@ -348,9 +359,11 @@ void Grafo::removerNo(int id)
         }
         else
         {
-            n = aux;
+
             aux = n->getAntNo();
             aux->setProx(n->getProxNo());
+            No* aux2 = n->getProxNo();
+            aux2->setAntNo(aux);
         }
         delete n;
     }
@@ -358,8 +371,8 @@ void Grafo::removerNo(int id)
 bool Grafo::verificarGrafoBipartido()
 {
     No* temporario = NULL;
-    int vertice[tamanho];//cria um vetor com os grupos
-    for(int i =0; i<tamanho; i++)
+    int vertice[ordem];//cria um vetor com os grupos
+    for(int i =0; i<ordem; i++)
         vertice[i] = -1;
     inicio();
     while(aux!=NULL)
@@ -400,14 +413,16 @@ bool Grafo::bipartidoAux(No* n, int vertice[], int c)
 }
 Grafo* Grafo::grafoComplementar()
 {
-    Grafo* g = new Grafo(tamanho, orientada);
+    Grafo* g = new Grafo(orientada);
+    for(int  i = 0; i<ordem; i++)
+        g->inserirNo(i);
     ListaAdjacencia* lista = NULL;
     inicio();
     while(aux!= NULL)
     {
         lista = aux->getArestas();
         if(lista != NULL)
-            for(int i = 1; i<=tamanho; i++)
+            for(int i = 1; i<=ordem; i++)
                 if(!lista->existeIdAresta(i))
                     g->adicionarAresta(aux->getId(), i);
         proximoNo();
@@ -417,62 +432,40 @@ Grafo* Grafo::grafoComplementar()
 
 Grafo* Grafo::grafoInduzido(int tam, int vet[])
 {
-    Grafo* g;
-    stack<int> pilha;
     ListaAdjacencia* l;
-    while(!pilha.empty())
-        pilha.pop();
+    Grafo* g = new Grafo(orientada);
+    bool del[ordem];//vetor com a ordem do grafo
+    for(int i = 0; i< ordem; i++)
+        del[i] = true;
+    for(int i = 0; i<tam; i++)
+        del[vet[i]] = false;
     inicio();
-    if(tam>0)//verifica se o tamanho do vetor eh positivo e diferente de zero
+    for(int i = 0; i<ordem; i++)
     {
-        g = new Grafo(tamanho, orientada);
-        while(aux!= NULL)//cria uma pilha de exclusao
+        if(del[i] == false)
+            g->inserirNo(i);
+    }
+    inicio();
+    for(int i = 0; i<ordem; i++)
+    {
+        if(del[i] == false)
         {
-            for(int i = 0; i<tam; i++)
+            procurarIdNo(i);
+            l = aux->getArestas();
+            if(l!= NULL)
             {
-                if(aux->getId() != vet[i])
+                while(l->getAux()!= NULL)
                 {
-                    if(pilha.empty() || pilha.top() != aux->getId())
-                        pilha.push(aux->getId());
-                }
-                else if(!pilha.empty() && pilha.top() == aux->getId())
-                {
-                    pilha.pop();
-                    i = tam-1;
-                }
-                else
-                    i = tam-1;
-            }
-            proximoNo();
-        }
-        while(!pilha.empty())
-        {
-            g->removerNo(pilha.top());
-            pilha.pop();
-        }
-        for(int i = 0; i < tam; i++)
-        {
-            if(existeIdNo(vet[i]))
-            {
-                procurarIdNo(vet[i]);
-                l = aux->getArestas();
-                if(l!= NULL)
-                {
-                    l->inicio();
-                    while(l->getAux() != NULL)
-                    {
-                        int fim = l->getAux()->getId();
-                        g->adicionarAresta(vet[i],fim);
-                        l->proximaAresta();
-                    }
+                    g->adicionarAresta(i, l->getAux()->getId());
+                    l->proximaAresta();
                 }
             }
         }
     }
-    else
-        g = new Grafo(0, orientada);
     return g;
 }
+
+
 bool Grafo::verificarNoArticulacao(int idBusca)
 {
 
@@ -484,10 +477,11 @@ Grafo::~Grafo()//destrutor
     while(p != NULL)
     {
         No *t = p->getProxNo();
-        delete p->getArestas();
+        if(p->getArestas()!= NULL)
+            delete p->getArestas();
         delete p;
         p = t;
 
     }
-    cout << "Grafo apagado!";
+    cout << "Grafo apagado!" << endl;;
 }

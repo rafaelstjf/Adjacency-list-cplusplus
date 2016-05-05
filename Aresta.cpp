@@ -1,6 +1,5 @@
-#include <iostream>
+
 #include "Aresta.h"
-using namespace std;
 
 Aresta::Aresta()//construtor da classe
 {

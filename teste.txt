@@ -1,1 +1,7 @@
-Exibindo grafo.
+			Trabalho de Teoria dos grafos.
+		Aluno: Rafael de Souza Terra - 201465581C
+Grafo induzido: 
+
+Vertice ID: 1
+Vertice ID: 3
+

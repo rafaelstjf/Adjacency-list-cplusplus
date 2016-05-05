@@ -1,6 +1,9 @@
 #ifndef LISTAADJACENCIA_H_INCLUDED
 #define LISTAADJACENCIA_H_INCLUDED
+#include <sstream>
+#include <string>
 #include "Aresta.h"
+using namespace std;
 class ListaAdjacencia
 {
 private:
@@ -16,7 +19,6 @@ public:
    bool listaVazia();
    void procurarIdAresta(int id);
    bool existeIdAresta(int id);
-   void imprimir();
    void removerAresta(int id);
     ~ListaAdjacencia();
 };
