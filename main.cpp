@@ -129,7 +129,7 @@ int main(int argc, char * argv [])
     int vet[tam];
     Grafo* gComp = NULL;
     Grafo* gInduzido = NULL;
-   /* if (argc == 3)
+    if (argc == 3)
     {
         inputFile.open (argv[1], ios::in);//abre o arquivo
         outputFile.open(argv[2], ios::out);
@@ -148,9 +148,7 @@ int main(int argc, char * argv [])
     {
         cerr << "O algoritmo nao encontrou os arquivos de entrada ou saida!" << endl;
         exit(-1);
-    }*/
-    inputFile.open ("grafo_125.txt", ios::in);//abre o arquivo
-        outputFile.open("teste.txt", ios::out);
+    }
     cout <<"\t\t\tTrabalho de Teoria dos grafos." << endl;
     cout << "\t\tAluno: Rafael de Souza Terra - 201465581C" << endl;
     outputFile <<"\t\t\tTrabalho de Teoria dos grafos." << endl;
