@@ -111,7 +111,7 @@ void Grafo::inserirNo(int val) //insere um novo No ordenado no fim da lista
         ordem++;
     }
 }
-void Grafo::adicionarArco(int ini, int fim)//adiciona um arco
+void Grafo::adicionarArco(int ini, int fim, int peso)//adiciona um arco
 {
     procurarIdNo(ini);
     ListaAdjacencia* l = aux->getArestas();
@@ -119,7 +119,7 @@ void Grafo::adicionarArco(int ini, int fim)//adiciona um arco
     {
         if(!l->existeIdAresta(fim))
         {
-            aux->getArestas()->inserir(fim);
+            aux->getArestas()->inserir(fim,peso);
             aux->setGrauNo(aux->getGrauNo() + 1);
         }
         else
@@ -131,22 +131,22 @@ void Grafo::adicionarArco(int ini, int fim)//adiciona um arco
     else
     {
         l = new ListaAdjacencia();
-        l->inserir(fim);
+        l->inserir(fim, peso);
         aux->setArestas(l);
         aux->setGrauNo(aux->getGrauNo() + 1);
     }
 }
 
-void Grafo::adicionarAresta(int ini, int fim)//adiciona aresta/arco de acordo com o tipo de grafo
+void Grafo::adicionarAresta(int ini, int fim, int peso)//adiciona aresta/arco de acordo com o tipo de grafo
 {
     if(existeIdNo(ini) && existeIdNo(fim) && ini!=fim)
     {
         if(orientada)
-            adicionarArco(ini, fim);
+            adicionarArco(ini, fim, peso);
         else
         {
-            adicionarArco(ini,fim);
-            adicionarArco(fim, ini);
+            adicionarArco(ini,fim, peso);
+            adicionarArco(fim, ini, peso);
         }
     }
 }
@@ -162,19 +162,7 @@ int Grafo::grauNo(int id)//retorna o grau do vertice desejado
         return -1;
     }
 }
-void Grafo::preencherGrafoCompleto()//preencher todas as arestas de maneira a criar o grafo completo
-{
-    for(int i=0; i<ordem; i++)
-    {
-        for(int j=0; j<ordem; j++)
-        {
-            if(j!=i)
-            {
-                adicionarAresta(i,j);
-            }
-        }
-    }
-}
+
 int Grafo::grauGrafo()//calcula o grau do grafo; Grau do grafo = grau do maior no
 {
     int grauGrafo = -1;
@@ -203,7 +191,7 @@ string Grafo::exibirGrafo() //retorna uma string como grafo em forma de lista de
             lbaux->inicio();
             while(lbaux->getAux()!= NULL)
             {
-                stream << "-> " << lbaux->getAux()->getId() << " ";
+                stream << "-(" << lbaux->getAux()->getPeso()<<")-> " << lbaux->getAux()->getId() << " ";
                 lbaux->proximaAresta();
             }
         }
@@ -249,7 +237,7 @@ string Grafo::listarAdjacentesNo(int id) //imprime os adjacentes do No de Id des
             lbaux->inicio();
         while(lbaux->getAux()!= NULL)
         {
-            stream << "-> " << lbaux->getAux()->getId() << " ";
+            stream << "-("<<lbaux->getAux()->getPeso()<<")-> " << lbaux->getAux()->getId() << " ";
             lbaux->proximaAresta();
         }
     }
@@ -291,8 +279,8 @@ bool Grafo::verificarGrafoConexo()//verifica se o grafo é conexo
 {
     ListaAdjacencia* l;
     inicio();
-    bool visitados[ordem];
-    for(int i =0; i<ordem; i++)
+    bool visitados[(ultimo->getId()+1)];
+    for(int i =0; i<(ultimo->getId()+1); i++)
         visitados[i] = false;
     stack<int> pilha;
     int numVis = 1;
@@ -375,8 +363,8 @@ void Grafo::removerNo(int id)//remove um determinado no
 bool Grafo::verificarGrafoBipartido() //verifica se o grafo é bipartido
 {
     No* temporario = NULL;
-    int vertice[ordem];//cria um vetor com os grupos
-    for(int i =0; i<ordem; i++)
+    int vertice[(ultimo->getId()+1)];//cria um vetor com os grupos
+    for(int i =0; i<(ultimo->getId()+1); i++)
         vertice[i] = -1;
     inicio();
     while(aux!=NULL)
@@ -428,7 +416,7 @@ Grafo* Grafo::grafoComplementar()//retorna o grafo complementar
         if(lista != NULL)
             for(int i = 1; i<=ordem; i++)
                 if(!lista->existeIdAresta(i))
-                    g->adicionarAresta(aux->getId(), i);
+                    g->adicionarAresta(aux->getId(), i, 0);
         proximoNo();
     }
     return g;
@@ -438,19 +426,24 @@ Grafo* Grafo::grafoInduzido(int tam, int vet[])//retorna o grafo induzido
 {
     ListaAdjacencia* l;
     Grafo* g = new Grafo(orientada);
-    bool del[ordem];//vetor com a ordem do grafo
-    for(int i = 0; i< ordem; i++)
+    bool del[(ultimo->getId()+1)];//vetor com a ordem do grafo
+    for(int i = 0; i< (ultimo->getId()+1); i++)
         del[i] = true;
     for(int i = 0; i<tam; i++)
-        del[vet[i]] = false;
+    {
+        if(vet[i] <= ultimo->getId())
+        {
+            del[vet[i]] = false;
+        }
+    }
     inicio();
-    for(int i = 0; i<ordem; i++)
+    for(int i = 0; i<(ultimo->getId()+1); i++)
     {
         if(del[i] == false)
             g->inserirNo(i);
     }
     inicio();
-    for(int i = 0; i<ordem; i++)
+    for(int i = 0; i<(ultimo->getId()+1); i++)
     {
         if(del[i] == false)
         {
@@ -462,7 +455,7 @@ Grafo* Grafo::grafoInduzido(int tam, int vet[])//retorna o grafo induzido
                 l->inicio();
                 while(l->getAux()!= NULL)
                 {
-                    g->adicionarAresta(i, l->getAux()->getId());
+                    g->adicionarAresta(i, l->getAux()->getId(),l->getAux()->getPeso());
                     l->proximaAresta();
                 }
             }
@@ -473,10 +466,10 @@ Grafo* Grafo::grafoInduzido(int tam, int vet[])//retorna o grafo induzido
 
 int Grafo::contarComponentesConexas()//retorna o numero de componentes conexas
 {
-    int* componentes = new int[ordem];
+    int* componentes = new int[(ultimo->getId()+1)];
     int cc = 0;
     No* temp;
-    for(int i = 0; i<ordem; i++)
+    for(int i = 0; i<(ultimo->getId()+1); i++)
         componentes[i] = 0;
     inicio();
     while(aux!=NULL)
@@ -525,21 +518,24 @@ void Grafo::componentesConexasAux(No* temp, int cc, int* componentes)//funcao au
 
 bool Grafo::verificarArestaPonte(int ini, int fim)//verifica se a aresta desejada é uma ponte
 {
+     int pesoFim = 0, pesoIni = 0;
     ListaAdjacencia* l ;
     if(existeIdNo(ini) && existeIdNo(fim))
     {
+
         if(orientada)
         {
             procurarIdNo(ini);
             int ccAntes = contarComponentesConexas();
             l = aux->getArestas();
             if(l!=NULL)
-            {
+            {   l->procurarIdAresta(fim);
+                pesoFim = l->getAux()->getPeso();
                 l->removerAresta(fim);
             }
             int ccDepois = contarComponentesConexas();
             procurarIdNo(ini);
-            adicionarAresta(ini, fim);
+            adicionarAresta(ini, fim, pesoFim);
             if(ccAntes<ccDepois)
                 return true;
             else
@@ -552,6 +548,8 @@ bool Grafo::verificarArestaPonte(int ini, int fim)//verifica se a aresta desejad
             l = aux->getArestas();
             if(l!=NULL)
             {
+                l->procurarIdAresta(fim);
+                pesoFim = l->getAux()->getPeso();
                 l->removerAresta(fim);
             }
             procurarIdNo(fim);
@@ -562,7 +560,7 @@ bool Grafo::verificarArestaPonte(int ini, int fim)//verifica se a aresta desejad
             }
             int ccDepois = contarComponentesConexas();
             procurarIdNo(ini);
-            adicionarAresta(ini, fim);
+            adicionarAresta(ini, fim, pesoFim);
             if(ccAntes<ccDepois)
                 return true;
             else
@@ -577,10 +575,10 @@ bool Grafo::verificarNoArticulacao(int idBusca)//verifica se um dado no é de ar
     if(existeIdNo(idBusca))
     {
         int ccAntes = contarComponentesConexas();
-        int* componentes = new int[ordem];
+        int* componentes = new int[(ultimo->getId()+1)];
         int ccDepois = 0;
         No* temp;
-        for(int i = 0; i<ordem; i++)
+        for(int i = 0; i<(ultimo->getId()+1); i++)
             componentes[i] = 0;
         componentes[idBusca]  = 1;
         inicio();
@@ -594,11 +592,84 @@ bool Grafo::verificarNoArticulacao(int idBusca)//verifica se um dado no é de ar
             proximoNo();
         }
         if(ccAntes<ccDepois)
-        return true;
-    else return false;
+            return true;
+        else return false;
     }
     else return false;
 
+}
+string Grafo::fechoTransitivoDireto(int id){
+    ListaAdjacencia* l;
+    stringstream stream;
+    stream << "\n";
+    bool visitados[(ultimo->getId()+1)];
+    for(int i =0; i<(ultimo->getId()+1); i++)
+        visitados[i] = false;
+    stack<int> pilha;
+    int ant = 0;
+    visitados[id] = true;
+    procurarIdNo(id);
+    pilha.push(aux->getId());
+    while(!pilha.empty())
+    {
+        procurarIdNo(pilha.top());
+        ant = aux->getId();
+        pilha.pop();
+        l = aux->getArestas();
+        if(l!=NULL)
+        {
+            l->inicio();
+            while(l->getAux()!= NULL)
+            {
+                if(!visitados[l->getAux()->getId()] && l->getAux()->getId() != ant)
+                {
+                    visitados[l->getAux()->getId()] = true;
+                    pilha.push(l->getAux()->getId());
+                }
+                l->proximaAresta();
+            }
+        }
+    }
+    stream << "Vertices alcancados (Fecho transitivo direto fechado): {";
+    for(int i = 0; i<ultimo->getId()+1;i++){
+        if(visitados[i] != false && i!= id)
+            stream << i <<"; ";
+    }
+    stream <<id << "}";
+    return stream.str();
+}
+void Grafo::removerAresta(int ini, int fim)//remove uma aresta
+{
+    if(existeIdNo(ini) && existeIdNo(fim ))
+    {
+        ListaAdjacencia* l;
+        if(orientada)
+        {
+            procurarIdNo(ini);
+            l = aux->getArestas();
+            if(l!=NULL)
+            {
+                l->removerAresta(fim);
+                aux->setGrauNo(aux->getGrauNo()-1);
+            }
+        }
+        else{
+            procurarIdNo(ini);
+            l = aux->getArestas();
+            if(l!=NULL)
+            {
+                l->removerAresta(fim);
+                aux->setGrauNo(aux->getGrauNo()-1);
+            }
+            procurarIdNo(fim);
+            l = aux->getArestas();
+            if(l!=NULL)
+            {
+                l->removerAresta(ini);
+                aux->setGrauNo(aux->getGrauNo()-1);
+            }
+        }
+    }
 }
 Grafo::~Grafo()//destrutor
 {

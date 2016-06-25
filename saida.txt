@@ -1,0 +1,10 @@
+			Trabalho de Teoria dos grafos.
+		Aluno: Rafael de Souza Terra - 201465581C
+Exibindo grafo.
+
+Vertice ID: 0-(0)-> 1 -(0)-> 2 
+Vertice ID: 1-(0)-> 0 
+Vertice ID: 2-(0)-> 0 -(0)-> 3 
+Vertice ID: 3-(0)-> 2 -(0)-> 4 
+Vertice ID: 4-(0)-> 3 
+

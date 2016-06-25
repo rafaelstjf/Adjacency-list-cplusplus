@@ -22,7 +22,12 @@ void menu()
     cout << "11 - Retornar o grafo complementar." << endl;
     cout << "12 - Verificar se uma dada aresta eh ponte." << endl;
     cout << "13 - Verificar se dois vertices sao adjacentes." << endl;
-    cout << "14 - Sair." << endl;
+    cout << "14 - Adicionar aresta" << endl;
+    cout << "15 - Adicionar vertice" << endl;
+    cout << "16 - Remover aresta" << endl;
+    cout << "17 - Remover vertice" << endl;
+    cout << "18 - Fecho transitivo direto(fechado) de um vertice." << endl;
+    cout << "19 - Sair." << endl;
 }
 int obterTamanhoGrafo()
 {
@@ -32,7 +37,7 @@ int obterTamanhoGrafo()
     char temporaria[10];//vetor temporario
     int tamanho = 0, i = 0, j = 0;
     for(int k = 0; k<10; k++)//colocando null em todos os indices do vetor temporario
-        temporaria[i] = NULL;
+        temporaria[i] = ' ';
     getline(inputFile, str);//pega a primeira linha do arquivo
     while (str[i] != '\0') //enquanto nao chega ao fim do string
     {
@@ -65,17 +70,17 @@ Grafo* preencherArestas(Grafo* g)
     inputFile.clear(); //volta o estado para good
     inputFile.seekg(0, ios::beg); //volta ao inicio
     getline(inputFile, str);//pega a linha do arquivo
-    char tempIni[5], tempFim[5];//vetor temporario
-    int ini = 0, fim = 0, j = 0, contadorEspaco = 0;
+    char tempIni[5], tempFim[5], tempPeso[5];//vetor temporario
+    int ini = 0, fim = 0, j = 0,peso = 0, contadorEspaco = 0;
     for(int k = 0; k<5; k++) //colocando null em todos os indices do vetor temporario
     {
-        tempIni[k] = NULL;
-        tempFim[k] = NULL;
+        tempIni[k] = ' ';
+        tempFim[k] = ' ';
     }
     while(inputFile.good())
     {
         for(int i =0; str[i]!= '\0'; i++)
-            str[i] = NULL;
+            str[i] = ' ';
         getline(inputFile, str);//pega a linha do arquivo
         for(int i = 0; str[i]!= '\0'; i++)
         {
@@ -90,18 +95,22 @@ Grafo* preencherArestas(Grafo* g)
             }
             if(contadorEspaco == 1 && fim == 0)
                 tempFim[j] = str[i];
+             if(contadorEspaco == 2 && peso == 0)
+                tempPeso[j] = str[i];
             j++;
         }
         fim = atoi(tempFim);
-        g->adicionarAresta(ini, fim);
+        g->adicionarAresta(ini, fim,peso);
         contadorEspaco = 0;
         fim = 0;
         ini = 0;
+        peso = 0;
         j = 0;
         for(int k = 0; k<5; k++) //colocando null em todos os indices do vetor temporario
         {
-            tempIni[k] = NULL;
-            tempFim[k] = NULL;
+            tempIni[k] = ' ';
+            tempFim[k] = ' ';
+            tempPeso[k] = ' ';
         }
     }
     return g;
@@ -125,7 +134,7 @@ int main(int argc, char * argv [])
 {
     Grafo* grafo = NULL;
     int tamanho  = 0, opcaoEscolhida = -1;
-    int id = 0, ini = 0, fim = 0, tam = -1;
+    int id = 0, ini = 0, fim = 0, tam = -1, peso = -1;
     int vet[tam];
     Grafo* gComp = NULL;
     Grafo* gInduzido = NULL;
@@ -412,7 +421,7 @@ int main(int argc, char * argv [])
             }
             break;
         case 13:
-            cout << "Digite o primeiro vertice." << endl;
+            cout << "Digite o vertice de inicio." << endl;
             ini =0;
             cin >> ini;
             while(ini < 0)
@@ -420,7 +429,7 @@ int main(int argc, char * argv [])
                 cout << "Vertice invalido! Digite novamente." << endl;
                 cin >> ini;
             }
-            cout << "Digite o segundo vertice." << endl;
+            cout << "Digite o vertice de destino." << endl;
             fim =0;
             cin >> fim;
             while(fim < 0)
@@ -450,6 +459,139 @@ int main(int argc, char * argv [])
             }
             break;
         case 14:
+            cout << "Digite o vertice de inicio." << endl;
+            ini =0;
+            cin >> ini;
+            while(ini < 0)
+            {
+                cout << "Vertice invalido! Digite novamente." << endl;
+                cin >> ini;
+            }
+            cout << "Digite o vertice de destino." << endl;
+            fim =0;
+            cin >> fim;
+            while(fim < 0)
+            {
+                cout << "Vertice invalido! Digite novamente." << endl;
+                cin >> fim;
+            }
+            cout << "Digite o peso da aresta" << endl;
+            cin >> peso;
+            if(grafo->existeIdNo(ini) && grafo->existeIdNo(fim) )
+            {
+                grafo->adicionarAresta(ini, fim, peso);
+                cout << "Aresta ("<< ini <<", " << fim << ") criada com sucesso." << endl;
+                if (desejaSalvar())
+                    outputFile << "Aresta ("<< ini <<", " << fim << ") criada com sucesso." << endl;
+            }
+            else
+            {
+                cout << "A aresta nao foi criada pois, pelo menos um vertice nao existe! " << endl;
+                if (desejaSalvar())
+                    outputFile << "A aresta nao foi criada pois, pelo menos um vertice nao existe! " << endl;
+            }
+
+            break;
+        case 15:
+            cout << "Digite o vertice." << endl;
+            id = 0;
+            cin >> id;
+            while(id < 0)
+            {
+                cout << "Vertice invalido! Digite novamente." << endl;
+                cin >> id;
+            }
+            if(grafo->existeIdNo(id))
+            {
+                cout << "O vertice "<< id <<" ja existe!" << endl;
+                if (desejaSalvar())
+                    outputFile << "O vertice "<< id <<" ja existe!" << endl;
+
+            }
+            else
+            {
+                grafo->inserirNo(id);
+                cout << "O vertice "<< id <<" foi criado com sucesso." << endl;
+                if (desejaSalvar())
+                    outputFile << "O vertice "<< id <<" foi criado com sucesso." << endl;
+            }
+            break;
+        case 16:
+            cout << "Digite o vertice de inicio." << endl;
+            ini =0;
+            cin >> ini;
+            while(ini < 0)
+            {
+                cout << "Vertice invalido! Digite novamente." << endl;
+                cin >> ini;
+            }
+            cout << "Digite o vertice de destino." << endl;
+            fim =0;
+            cin >> fim;
+            while(fim < 0)
+            {
+                cout << "Vertice invalido! Digite novamente." << endl;
+                cin >> fim;
+            }
+            if(grafo->existeIdNo(ini) && grafo->existeIdNo(fim))
+            {
+                grafo->removerAresta(ini, fim);
+                cout << "aresta ("<< ini <<", " << fim << ") removida" << endl;
+                if (desejaSalvar())
+                    outputFile << "aresta ("<< ini <<", " << fim << ") removida" << endl;
+            }
+            else
+            {
+                cout << "A aresta nao foi removida pois, pelo menos um vertice nao existe! " << endl;
+                if (desejaSalvar())
+                    outputFile << "A aresta nao foi removida pois, pelo menos um vertice nao existe! " << endl;
+            }
+            break;
+        case 17:
+            cout << "Digite o vertice." << endl;
+            id = 0;
+            cin >> id;
+            while(id < 0)
+            {
+                cout << "Vertice invalido! Digite novamente." << endl;
+                cin >> id;
+            }
+            if(grafo->existeIdNo(id))
+            {
+                grafo->removerNo(id);
+                cout << "O vertice "<< id <<" foi removido com sucesso." << endl;
+                if (desejaSalvar())
+                    outputFile << "O vertice "<< id <<" foi removido com sucesso." << endl;
+
+            }
+            else
+            {
+
+                cout << "O vertice "<< id <<" nao existe!" << endl;
+                if (desejaSalvar())
+                    outputFile << "O vertice "<< id <<" nao existe!" << endl;
+            }
+            break;
+        case 18:
+            cout << "Digite o vertice desejado" << endl;
+             id = 0;
+            cin >> id;
+             if(grafo->existeIdNo(id))
+            {
+                cout << grafo->fechoTransitivoDireto(id)<< endl;
+                if (desejaSalvar())
+                    outputFile << grafo->fechoTransitivoDireto(id) << endl;
+
+            }
+            else
+            {
+
+                cout << "O vertice "<< id <<" nao existe!" << endl;
+                if (desejaSalvar())
+                    outputFile << "O vertice "<< id <<" nao existe!" << endl;
+            }
+            break;
+        case 19:
             outputFile.close();
             inputFile.close();
             delete grafo;
@@ -457,15 +599,12 @@ int main(int argc, char * argv [])
             break;
 
         default:
-            cout << "Opcao invalida! Saindo do programa." << endl;
-            outputFile.close();
-            inputFile.close();
-            delete grafo;
-            exit(0);
+            cout << "Opcao invalida! Digite novamente." << endl;
+            cin >> opcaoEscolhida;
         }
-
     }
 }
+
 /*Codigos dos erros
     -1 = erro na abertura dos arquivos
 */
