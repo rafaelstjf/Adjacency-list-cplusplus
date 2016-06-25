@@ -468,7 +468,6 @@ int Grafo::contarComponentesConexas()//retorna o numero de componentes conexas
 {
     int* componentes = new int[(ultimo->getId()+1)];
     int cc = 0;
-    No* temp;
     for(int i = 0; i<(ultimo->getId()+1); i++)
         componentes[i] = 0;
     inicio();
@@ -518,7 +517,7 @@ void Grafo::componentesConexasAux(No* temp, int cc, int* componentes)//funcao au
 
 bool Grafo::verificarArestaPonte(int ini, int fim)//verifica se a aresta desejada é uma ponte
 {
-     int pesoFim = 0, pesoIni = 0;
+     int pesoFim = 0;
     ListaAdjacencia* l ;
     if(existeIdNo(ini) && existeIdNo(fim))
     {
@@ -577,7 +576,6 @@ bool Grafo::verificarNoArticulacao(int idBusca)//verifica se um dado no é de ar
         int ccAntes = contarComponentesConexas();
         int* componentes = new int[(ultimo->getId()+1)];
         int ccDepois = 0;
-        No* temp;
         for(int i = 0; i<(ultimo->getId()+1); i++)
             componentes[i] = 0;
         componentes[idBusca]  = 1;

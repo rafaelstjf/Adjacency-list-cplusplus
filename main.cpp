@@ -29,19 +29,22 @@ void menu()
     cout << "18 - Fecho transitivo direto(fechado) de um vertice." << endl;
     cout << "19 - Sair." << endl;
 }
-int obterTamanhoGrafo()
+Grafo* gerarGrafo()
 {
+//obter tamanho do grafo
     string str;
+    char temporaria[5];//vetor temporario
+    bool orientado = false;
+    char tempIni[5], tempFim[5], tempPeso[5];//vetor temporario
+    int ini = 0, fim = 0, j = 0,peso = 0, contadorEspaco = 0, tamanho = 0, i = 0;
+    for(int k = 0; k<5; k++)//zerando o vetor de char
+        temporaria[k] = '\0';
     inputFile.clear(); //volta o estado para good
     inputFile.seekg(0, ios::beg); //volta ao inicio
-    char temporaria[10];//vetor temporario
-    int tamanho = 0, i = 0, j = 0;
-    for(int k = 0; k<10; k++)//colocando null em todos os indices do vetor temporario
-        temporaria[i] = ' ';
     getline(inputFile, str);//pega a primeira linha do arquivo
     while (str[i] != '\0') //enquanto nao chega ao fim do string
     {
-        if(str[i] == ' ' || str[i + 1] == '\0')//verifica se o caractere é o espaco ou o final da linha
+        if(str[i] == 32 || str[i + 1] == '\0')//verifica se o caractere é o espaco ou o final da linha
         {
             //limpa os numeros apos a parada
             if( str[i + 1] == '\0')
@@ -49,72 +52,97 @@ int obterTamanhoGrafo()
                 temporaria[j] = str[i];
                 j++;
             }
-            for (int limp = j; temporaria[limp] != '\0'; limp++)
-                temporaria[limp] = NULL;
+
             //converte o vetor char em int
             tamanho = atoi(temporaria);
+            for (int ultN = j; temporaria[ultN] != '\0'; ultN++)//verifica se n tem mais numeros depois de J
+                temporaria[ultN] = '\0';
             j = 0;//volta o indice do vetor temporario para 0
         }
-        else if (str[i] != ' ' || str[i + 1] != '\0')//for para passar os valores da string para o vetor char
+        else if (str[i] != 32 || str[i + 1] != '\0')//for para passar os valores da string para o vetor char
         {
             temporaria[j] = str[i];
             j++;
         }
         i++;//aumenta o indice da string
     }
-    return tamanho;
-}
-Grafo* preencherArestas(Grafo* g)
-{
-    string str;
-    inputFile.clear(); //volta o estado para good
-    inputFile.seekg(0, ios::beg); //volta ao inicio
-    getline(inputFile, str);//pega a linha do arquivo
-    char tempIni[5], tempFim[5], tempPeso[5];//vetor temporario
-    int ini = 0, fim = 0, j = 0,peso = 0, contadorEspaco = 0;
+    // preencher e verificar se eh orientada
+    bool matrizAdj[tamanho][tamanho];
+    int matrizPeso[tamanho][tamanho];
+    for(int t = 0; t<tamanho; t++)
+        for(int k  = 0; k<tamanho; k++)
+        {
+            matrizAdj[t][k] = false;
+            matrizPeso[t][k] = 0;
+        }
     for(int k = 0; k<5; k++) //colocando null em todos os indices do vetor temporario
     {
-        tempIni[k] = ' ';
-        tempFim[k] = ' ';
+        tempIni[k] = '\0';
+        tempFim[k] = '\0';
+        tempPeso[k] = '\0';
     }
+    j = 0;
     while(inputFile.good())
     {
-        for(int i =0; str[i]!= '\0'; i++)
-            str[i] = ' ';
         getline(inputFile, str);//pega a linha do arquivo
-        for(int i = 0; str[i]!= '\0'; i++)
+        for(int t = 0; str[t]!= '\0'; t++)
         {
-            if(str[i] == ' ')
+            if(str[t] == 32)
                 contadorEspaco++;
             if(contadorEspaco == 0)
-                tempIni[j] = str[i];
+                tempIni[j] = str[t];
             if(contadorEspaco == 1 && ini == 0)
             {
                 ini = atoi(tempIni);
                 j = 0;
             }
             if(contadorEspaco == 1 && fim == 0)
-                tempFim[j] = str[i];
-             if(contadorEspaco == 2 && peso == 0)
-                tempPeso[j] = str[i];
+                tempFim[j] = str[t];
+            if(contadorEspaco == 2 && peso == 0)
+            {
+                j = 0;
+                tempPeso[j] = str[t];
+            }
+
             j++;
         }
         fim = atoi(tempFim);
-        g->adicionarAresta(ini, fim,peso);
+        peso = atoi(tempPeso);
+        matrizAdj[ini][fim] = true;
+        matrizPeso[ini][fim] = peso;
         contadorEspaco = 0;
         fim = 0;
         ini = 0;
         peso = 0;
         j = 0;
-        for(int k = 0; k<5; k++) //colocando null em todos os indices do vetor temporario
+        for(int k = 0; k<5; k++) //cotocando null em todos os indices do vetor temporario
         {
-            tempIni[k] = ' ';
-            tempFim[k] = ' ';
-            tempPeso[k] = ' ';
+            tempIni[k] = '\0';
+            tempFim[k] = '\0';
+            tempPeso[k] = '\0';
         }
     }
+    for(int t = 0; t<tamanho; t++)
+    {
+        for(int k = 0; k<tamanho; k++)
+            if(matrizAdj[t][k]!=matrizAdj[k][t])
+            {
+                orientado = true;
+                break;
+            }
+
+    }
+    Grafo* g = new Grafo(orientado);
+    for(int t = 0; t<tamanho; t++)
+        g->inserirNo(t);
+    for(int t = 0; t<tamanho; t++)
+        for(int k = 0; k<tamanho; k++)
+            if(matrizAdj[t][k] ==true)
+                g->adicionarAresta(t, k, matrizPeso[t][k]);
     return g;
+
 }
+
 bool desejaSalvar()
 {
     char op;
@@ -164,11 +192,8 @@ int main(int argc, char * argv [])
     outputFile << "\t\tAluno: Rafael de Souza Terra - 201465581C" << endl;
     cout << "----------------------------------"<< endl;
     cout << "Criando grafo a partir do arquivo. "<< endl;
-    tamanho = obterTamanhoGrafo();
-    grafo = new Grafo(false);
-    for(int  i = 0; i<tamanho; i++)
-        grafo->inserirNo(i);
-    grafo = preencherArestas(grafo);
+    grafo = gerarGrafo();
+    tamanho = grafo->ordemGrafo();
     cout << "Grafo criado com sucesso!" << endl;
     cout << "----------------------------------"<< endl;
     while(true)
@@ -574,9 +599,9 @@ int main(int argc, char * argv [])
             break;
         case 18:
             cout << "Digite o vertice desejado" << endl;
-             id = 0;
+            id = 0;
             cin >> id;
-             if(grafo->existeIdNo(id))
+            if(grafo->existeIdNo(id))
             {
                 cout << grafo->fechoTransitivoDireto(id)<< endl;
                 if (desejaSalvar())

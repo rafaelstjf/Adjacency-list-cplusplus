@@ -33,7 +33,7 @@ int Aresta::getPeso()
 }
 void Aresta::setPeso(int pe)
 {
-    peso = peso;
+    peso = pe;
 }
 void Aresta::setAnterior(Aresta* c)
 {
