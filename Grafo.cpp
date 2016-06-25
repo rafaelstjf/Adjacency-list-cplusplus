@@ -16,9 +16,7 @@ void Grafo::inicio()//coloca aux apontando para a primeiro no
 void Grafo::proximoNo()//avanca o ponteiro aux ate o ultimo no
 {
     if(aux != NULL)
-    {
         aux = aux->getProxNo();
-    }
 }
 bool Grafo::grafoVazio()//verifica se a lista vazia
 {
@@ -38,7 +36,6 @@ bool Grafo::existeIdNo(int id)//verifica se o no de id desejado existe
                 return true;
             proximoNo();
         }
-
         return false;
     }
     else return false;
@@ -46,7 +43,6 @@ bool Grafo::existeIdNo(int id)//verifica se o no de id desejado existe
 }
 void Grafo::procurarIdNo(int id)//procurar o no com o id desejado até o ultimo no
 {
-
     if(!grafoVazio())
     {
         inicio();
@@ -54,9 +50,7 @@ void Grafo::procurarIdNo(int id)//procurar o no com o id desejado até o ultimo 
         {
             proximoNo();
             if(aux==NULL)
-            {
                 break;
-            }
         }
     }
 }
@@ -86,9 +80,7 @@ void Grafo::inserirNo(int val) //insere um novo No ordenado no fim da lista
     {
         inicio();
         while(aux->getProxNo() != NULL && aux->getId() <= val)
-        {
             proximoNo();
-        }
         if(aux->getId() < val)
         {
             No* c = new No();
@@ -122,11 +114,6 @@ void Grafo::adicionarArco(int ini, int fim, int peso)//adiciona um arco
             aux->getArestas()->inserir(fim,peso);
             aux->setGrauNo(aux->getGrauNo() + 1);
         }
-        else
-        {
-            if(orientada)
-                cout << "Arco (" << ini <<", " << fim<<") ja existente!" << endl;
-        }
     }
     else
     {
@@ -158,9 +145,7 @@ int Grafo::grauNo(int id)//retorna o grau do vertice desejado
         return aux->getGrauNo();
     }
     else//caso nao encontre o no, retorna o grau como -1
-    {
         return -1;
-    }
 }
 
 int Grafo::grauGrafo()//calcula o grau do grafo; Grau do grafo = grau do maior no
@@ -169,9 +154,7 @@ int Grafo::grauGrafo()//calcula o grau do grafo; Grau do grafo = grau do maior n
     for(int i = 1; i<=ordem; i++)
     {
         if(grauGrafo <=grauNo(i))
-        {
             grauGrafo  = grauNo(i);
-        }
     }
     return grauGrafo;
 }
@@ -234,11 +217,13 @@ string Grafo::listarAdjacentesNo(int id) //imprime os adjacentes do No de Id des
         stream << aux->getId();
         lbaux = aux->getArestas();
         if(lbaux!= NULL)
-            lbaux->inicio();
-        while(lbaux->getAux()!= NULL)
         {
-            stream << "-("<<lbaux->getAux()->getPeso()<<")-> " << lbaux->getAux()->getId() << " ";
-            lbaux->proximaAresta();
+            lbaux->inicio();
+            while(lbaux->getAux()!= NULL)
+            {
+                stream << "-("<<lbaux->getAux()->getPeso()<<")-> " << lbaux->getAux()->getId() << " ";
+                lbaux->proximaAresta();
+            }
         }
     }
     else
@@ -517,7 +502,7 @@ void Grafo::componentesConexasAux(No* temp, int cc, int* componentes)//funcao au
 
 bool Grafo::verificarArestaPonte(int ini, int fim)//verifica se a aresta desejada é uma ponte
 {
-     int pesoFim = 0;
+    int pesoFim = 0;
     ListaAdjacencia* l ;
     if(existeIdNo(ini) && existeIdNo(fim))
     {
@@ -528,7 +513,8 @@ bool Grafo::verificarArestaPonte(int ini, int fim)//verifica se a aresta desejad
             int ccAntes = contarComponentesConexas();
             l = aux->getArestas();
             if(l!=NULL)
-            {   l->procurarIdAresta(fim);
+            {
+                l->procurarIdAresta(fim);
                 pesoFim = l->getAux()->getPeso();
                 l->removerAresta(fim);
             }
@@ -596,10 +582,37 @@ bool Grafo::verificarNoArticulacao(int idBusca)//verifica se um dado no é de ar
     else return false;
 
 }
-string Grafo::fechoTransitivoDireto(int id){
+Grafo* Grafo::grafoTransposto()
+{
+    Grafo* transp = new Grafo(orientada);
     ListaAdjacencia* l;
-    stringstream stream;
-    stream << "\n";
+    inicio();
+    while(aux!= NULL)
+    {
+        transp->inserirNo(aux->getId());
+        proximoNo();
+    }
+    inicio();
+    while(aux!= NULL)
+    {
+        l = aux->getArestas();
+        if(l!= NULL)
+        {
+            l->inicio();
+            while(l->getAux()!= NULL)
+            {
+                transp->adicionarAresta(l->getAux()->getId(), aux->getId(), l->getAux()->getPeso());//cria uma aresta com sentido contrario
+                l->proximaAresta();
+            }
+        }
+        proximoNo();
+    }
+    return transp;
+}
+int* Grafo::fechoTransitivoAux(int id)
+{
+    stack<int> conjunto;
+    ListaAdjacencia* l;
     bool visitados[(ultimo->getId()+1)];
     for(int i =0; i<(ultimo->getId()+1); i++)
         visitados[i] = false;
@@ -628,12 +641,55 @@ string Grafo::fechoTransitivoDireto(int id){
             }
         }
     }
-    stream << "Vertices alcancados (Fecho transitivo direto fechado): {";
-    for(int i = 0; i<ultimo->getId()+1;i++){
-        if(visitados[i] != false && i!= id)
-            stream << i <<"; ";
+    conjunto.push(id);
+    int u =0;
+    while(u<(ultimo->getId()+1))
+    {
+        if(visitados[u] == true && u!= id)
+            conjunto.push(u);
+        u++;
     }
-    stream <<id << "}";
+    int* vetConjunto = new int[conjunto.size()+1];//um indice para guardar o tamanho
+    for(int i = 0; i<conjunto.size()+1; i++)
+        vetConjunto[i] = 0;
+    vetConjunto[0] = conjunto.size()+1;//guardar tamanho no indice 0
+    for(int i = 1; i<vetConjunto[0]; i++)
+    {
+            vetConjunto[i] = conjunto.top();
+        conjunto.pop();
+    }
+    return vetConjunto;
+}
+string Grafo::fechoTransitivoDireto(int id)
+{
+    stringstream stream;
+    stream << "Vertices alcancados a partir do vertice de ID: " << id<<" (Fecho transitivo direto fechado):\n {";
+    int* vet = fechoTransitivoAux(id);
+    int tamVet = vet[0];
+    for(int i = 1; i<tamVet; i++)
+    {
+        stream << vet[i];
+        if(i < tamVet -1)
+            stream << ", ";
+    }
+    stream << "}";
+    return stream.str();
+}
+
+string Grafo::fechoTransitivoIndireto(int id)
+{
+    stringstream stream;
+    Grafo* g1 = grafoTransposto();
+    stream << "Vertices que alcancam o vertice de ID: " << id<<" (Fecho transitivo indireto fechado):\n {";
+    int* vet = g1->fechoTransitivoAux(id);
+    int tamVet = vet[0];
+    for(int i = 1; i<tamVet; i++)
+    {
+        stream << vet[i];
+        if(i < tamVet -1)
+            stream << ", ";
+    }
+    stream << "}";
     return stream.str();
 }
 void Grafo::removerAresta(int ini, int fim)//remove uma aresta
@@ -651,7 +707,8 @@ void Grafo::removerAresta(int ini, int fim)//remove uma aresta
                 aux->setGrauNo(aux->getGrauNo()-1);
             }
         }
-        else{
+        else
+        {
             procurarIdNo(ini);
             l = aux->getArestas();
             if(l!=NULL)

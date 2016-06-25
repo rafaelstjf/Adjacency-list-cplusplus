@@ -27,7 +27,9 @@ void menu()
     cout << "16 - Remover aresta" << endl;
     cout << "17 - Remover vertice" << endl;
     cout << "18 - Fecho transitivo direto(fechado) de um vertice." << endl;
-    cout << "19 - Sair." << endl;
+    cout << "19 - Fecho transitivo indireto(fechado) de um vertice." << endl;
+    cout << "20 - Exibir o grafo transposto." << endl;
+    cout << "21 - Sair." << endl;
 }
 Grafo* gerarGrafo()
 {
@@ -166,6 +168,7 @@ int main(int argc, char * argv [])
     int vet[tam];
     Grafo* gComp = NULL;
     Grafo* gInduzido = NULL;
+    Grafo* gTransp = NULL;
     if (argc == 3)
     {
         inputFile.open (argv[1], ios::in);//abre o arquivo
@@ -616,7 +619,37 @@ int main(int argc, char * argv [])
                     outputFile << "O vertice "<< id <<" nao existe!" << endl;
             }
             break;
-        case 19:
+            case 19:
+            cout << "Digite o vertice desejado" << endl;
+            id = 0;
+            cin >> id;
+            if(grafo->existeIdNo(id))
+            {
+                cout << grafo->fechoTransitivoIndireto(id)<< endl;
+                if (desejaSalvar())
+                    outputFile << grafo->fechoTransitivoIndireto(id) << endl;
+
+            }
+            else
+            {
+
+                cout << "O vertice "<< id <<" nao existe!" << endl;
+                if (desejaSalvar())
+                    outputFile << "O vertice "<< id <<" nao existe!" << endl;
+            }
+            break;
+        case 20:
+            cout << "Exibindo grafo transposto." <<endl;
+            gTransp = grafo->grafoTransposto();
+            cout << gTransp->exibirGrafo() << endl;
+            if(desejaSalvar())
+            {
+                outputFile << "Exibindo grafo transposto." << endl;
+                outputFile << gTransp->exibirGrafo()<< endl;
+
+            }
+            break;
+        case 21:
             outputFile.close();
             inputFile.close();
             delete grafo;

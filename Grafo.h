@@ -21,6 +21,7 @@ private:
     void limpaVisitados();//coloca todos os nos como nao visitados
     bool bipartidoAux(No* n, int vertice[], int c);//funcao auxiliar da verificarGrafoBipartido
     void componentesConexasAux(No* n, int cc, int* componentes);//funcao auxiliar da contarComponentes conexas
+    int* fechoTransitivoAux(int id);// auxiliar para as funcoes de fecho transitivo direto e indireto
 public:
     Grafo(bool tipo);//construtor
     void inserirNo(int val); //insere um novo No ordenado no fim da lista
@@ -43,9 +44,10 @@ public:
     int contarComponentesConexas();//retorna o numero de componentes conexas
     bool verificarArestaPonte(int ini, int fim);//verifica se a aresta desejada é uma ponte
     bool verificarNoArticulacao(int id);//verifica se um dado no é de articulacao
-    void removerAresta(int ini, int fim);//remove a aresta entre os vertices desejados
     string fechoTransitivoDireto(int id);//exibe o conjunto de vertices que podem ser acessados por um caminho no vertice de id desejado
-
+     string fechoTransitivoIndireto(int id);//exibe o conjunto de vertices que acessam por algum caminho o vertice de id desejado
+    void removerAresta(int ini, int fim);//remove a aresta entre os vertices desejados
+    Grafo* grafoTransposto();//retorna o grafo transposto
     ~Grafo();//destrutor
 };
 #endif // GRAFO_H_INCLUDED
