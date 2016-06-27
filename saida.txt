@@ -1,0 +1,14 @@
+			Trabalho de Teoria dos grafos.
+		Aluno: Rafael de Souza Terra - 201465581C
+Vertices alcancados a partir do vertice de ID: 1 (Fecho transitivo direto fechado):
+ {1}
+Exibindo grafo.
+
+Vertice ID: 0
+Vertice ID: 1-(1)-> 0 
+Vertice ID: 2-(3)-> 0 
+Vertice ID: 3-(4)-> 2 
+Vertice ID: 4-(3)-> 3 
+
+Vertices que alcancam o vertice de ID: 1 (Fecho transitivo indireto fechado):
+ {0, 1}
