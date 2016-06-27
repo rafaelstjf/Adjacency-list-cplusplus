@@ -98,7 +98,6 @@ Grafo* gerarGrafo()
                 ini = atoi(tempIni);
                 j = 0;
             }
-<<<<<<< HEAD
             if(contadorEspaco == 1)
                 tempFim[j] = str[t];
             if(contadorEspaco == 2 && fim == 0)
@@ -109,22 +108,11 @@ Grafo* gerarGrafo()
 
             if(contadorEspaco == 2 && peso == 0)
             {
-=======
-            if(contadorEspaco == 1 && fim == 0)
-                tempFim[j] = str[t];
-            if(contadorEspaco == 2 && peso == 0)
-            {
-                j = 0;
->>>>>>> origin/master
                 tempPeso[j] = str[t];
             }
 
             j++;
         }
-<<<<<<< HEAD
-=======
-        fim = atoi(tempFim);
->>>>>>> origin/master
         peso = atoi(tempPeso);
         matrizAdj[ini][fim] = true;
         matrizPeso[ini][fim] = peso;
