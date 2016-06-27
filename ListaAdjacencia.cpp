@@ -60,13 +60,14 @@ void ListaAdjacencia::procurarIdAresta(int id)
 
 }
 //manipulacao
-void ListaAdjacencia::inserir(int val)
+void ListaAdjacencia::inserir(int val, int peso)
 {
     Aresta* c = new Aresta();
     if(pri == NULL)
     {
 
         c->setId(val);
+        c->setPeso(peso);
         c->setProx(pri);
         c->setAnterior(NULL);
         pri = c;
@@ -82,6 +83,7 @@ void ListaAdjacencia::inserir(int val)
                 proximaAresta();
             }
             c->setId(val);
+            c->setPeso(peso);
             c->setProx(NULL);
             c->setAnterior(aux);
             aux->setProx(c);

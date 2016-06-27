@@ -15,7 +15,7 @@ public:
    void inicio();
    void proximaAresta();
    Aresta* getAux();
-   void inserir(int id);
+   void inserir(int id, int peso);
    bool listaVazia();
    void procurarIdAresta(int id);
    bool existeIdAresta(int id);

@@ -5,12 +5,11 @@ Aresta::Aresta()//construtor da classe
 {
     proximo = NULL;
     id = 0;
-	anterior = NULL;
+    anterior = NULL;
 }
 int Aresta::getId()//retorna o ID do Aresta
 {
     return id;
-
 }
 Aresta* Aresta::getProx()//consulta o proximo Aresta
 {
@@ -27,6 +26,14 @@ void Aresta::setProx(Aresta* p)//atribui um novo Aresta para o ponteiro proximo
 Aresta* Aresta::getAnterior()
 {
     return anterior;
+}
+int Aresta::getPeso()
+{
+    return peso;
+}
+void Aresta::setPeso(int pe)
+{
+    peso = pe;
 }
 void Aresta::setAnterior(Aresta* c)
 {
