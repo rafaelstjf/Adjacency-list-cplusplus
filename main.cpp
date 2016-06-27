@@ -106,13 +106,16 @@ Grafo* gerarGrafo()
                 j = 0;
             }
 
-            if(contadorEspaco == 2 && peso == 0)
+            if(contadorEspaco == 2)
             {
                 tempPeso[j] = str[t];
             }
 
             j++;
         }
+        if(contadorEspaco==1)
+             fim = atoi(tempFim);
+        cout << "fim: " << fim << endl;
         peso = atoi(tempPeso);
         matrizAdj[ini][fim] = true;
         matrizPeso[ini][fim] = peso;
@@ -151,7 +154,7 @@ Grafo* gerarGrafo()
 
 bool desejaSalvar()
 {
-    char op;
+    char op = '\0';
     cout << "Deseja salvar em arquivo? [s/n]" << endl;
     cin >> op;
     while(op!='s' && op!= 'n')
