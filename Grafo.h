@@ -45,9 +45,10 @@ public:
     bool verificarArestaPonte(int ini, int fim);//verifica se a aresta desejada é uma ponte
     bool verificarNoArticulacao(int id);//verifica se um dado no é de articulacao
     string fechoTransitivoDireto(int id);//exibe o conjunto de vertices que podem ser acessados por um caminho no vertice de id desejado
-     string fechoTransitivoIndireto(int id);//exibe o conjunto de vertices que acessam por algum caminho o vertice de id desejado
+    string fechoTransitivoIndireto(int id);//exibe o conjunto de vertices que acessam por algum caminho o vertice de id desejado
     void removerAresta(int ini, int fim);//remove a aresta entre os vertices desejados
     Grafo* grafoTransposto();//retorna o grafo transposto
+    void algoritmoPrim();
     ~Grafo();//destrutor
 };
 #endif // GRAFO_H_INCLUDED

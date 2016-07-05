@@ -726,6 +726,9 @@ void Grafo::removerAresta(int ini, int fim)//remove uma aresta
         }
     }
 }
+void Grafo::algoritmoPrim(){
+
+}
 Grafo::~Grafo()//destrutor
 {
     No* p = prim;

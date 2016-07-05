@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <fstream>
 #include<string>
+#include<stdlib.h>
 #include "Grafo.h"
 using namespace std;
 std::fstream inputFile;
@@ -35,9 +36,9 @@ Grafo* gerarGrafo()
 {
 //obter tamanho do grafo
     string str;
-    char temporaria[5];//vetor temporario
+    char temporaria[5], tempIni[5], tempFim[5], tempPeso[5];//vetores temporarios
+    char opcao = '\0';
     bool orientado = false;
-    char tempIni[5], tempFim[5], tempPeso[5];//vetor temporario
     int ini = 0, fim = 0, j = 0,peso = 0, contadorEspaco = 0, tamanho = 0, i = 0;
     for(int k = 0; k<5; k++)//zerando o vetor de char
         temporaria[k] = '\0';
@@ -114,8 +115,7 @@ Grafo* gerarGrafo()
             j++;
         }
         if(contadorEspaco==1)
-             fim = atoi(tempFim);
-        cout << "fim: " << fim << endl;
+            fim = atoi(tempFim);
         peso = atoi(tempPeso);
         matrizAdj[ini][fim] = true;
         matrizPeso[ini][fim] = peso;
@@ -131,16 +131,17 @@ Grafo* gerarGrafo()
             tempPeso[k] = '\0';
         }
     }
-    for(int t = 0; t<tamanho; t++)
+    cout << "O grafo eh orientado? [S/N]" << endl;
+    cin >> opcao;
+    while(opcao!='S' && opcao!='N')
     {
-        for(int k = 0; k<tamanho; k++)
-            if(matrizAdj[t][k]!=matrizAdj[k][t])
-            {
-                orientado = true;
-                break;
-            }
-
+        cout << "Opcao errada! Digite S ou N." << endl;
+        cin >> opcao;
     }
+    if(opcao=='S')
+        orientado = true;
+    else if(opcao == 'N')
+        orientado = false;
     Grafo* g = new Grafo(orientado);
     for(int t = 0; t<tamanho; t++)
         g->inserirNo(t);
@@ -149,23 +150,30 @@ Grafo* gerarGrafo()
             if(matrizAdj[t][k] ==true)
                 g->adicionarAresta(t, k, matrizPeso[t][k]);
     return g;
-
 }
-
 bool desejaSalvar()
 {
     char op = '\0';
-    cout << "Deseja salvar em arquivo? [s/n]" << endl;
+    cout << "Deseja salvar em arquivo? [S/N]" << endl;
     cin >> op;
-    while(op!='s' && op!= 'n')
+    while(op!='S' && op!= 'N')
     {
         cout << "opcao invalida! Digite novamente" << endl;
         cin >> op;
     }
-    if(op == 's')
+    if(op == 'S')
         return true;
-    else if(op == 'n')
+    else if(op == 'S')
         return false;
+}
+void limparTela()
+{
+#ifdef WIN32
+    system("cls");
+#endif // WIN32
+#ifdef LINUX
+    system("clear");
+#endif // LINUX
 }
 int main(int argc, char * argv [])
 {
@@ -221,6 +229,7 @@ int main(int argc, char * argv [])
                 outputFile << grafo->exibirGrafo() << endl;
 
             }
+            limparTela();
             break;
         case 2:
             cout << "Digite o vertice desejado." << endl;
@@ -236,6 +245,7 @@ int main(int argc, char * argv [])
                 outputFile << "\n";
                 outputFile << "O grau do vertice " << id << " eh: " << grafo->grauNo(id) << endl;
             }
+            limparTela();
             break;
         case 3:
             cout << "O grau do grafo eh: " << grafo->grauGrafo() << endl;
@@ -244,6 +254,7 @@ int main(int argc, char * argv [])
                 outputFile << "\n";
                 outputFile << "O grau do grafo eh: " << grafo->grauGrafo() << endl;
             }
+            limparTela();
             break;
         case 4:
             cout << "Digite o vertice desejado." << endl;
@@ -259,6 +270,7 @@ int main(int argc, char * argv [])
                 outputFile << "\n";
                 outputFile << grafo->listarAdjacentesNo(id) << endl;
             }
+            limparTela();
             break;
         case 5:
             if(grafo->verificarKRegular()== -1)
@@ -279,6 +291,7 @@ int main(int argc, char * argv [])
                     outputFile << "O grafo eh "<<grafo->verificarKRegular() <<"-regular." << endl;
                 }
             }
+            limparTela();
             break;
         case 6:
             if(grafo->verificarGrafoCompleto())
@@ -299,6 +312,7 @@ int main(int argc, char * argv [])
                     outputFile << "O grafo nao eh completo." << endl;
                 }
             }
+            limparTela();
             break;
         case 7:
             if(grafo->verificarGrafoConexo())
@@ -319,6 +333,7 @@ int main(int argc, char * argv [])
                     outputFile << "O grafo nao eh conexo." << endl;
                 }
             }
+            limparTela();
             break;
         case 8:
             if(grafo->verificarGrafoBipartido())
@@ -339,6 +354,7 @@ int main(int argc, char * argv [])
                     outputFile << "O grafo nao eh bipartido." << endl;
                 }
             }
+            limparTela();
             break;
         case 9:
             cout << "Digite o tamanho do conjunto de vertices." << endl;
@@ -379,6 +395,7 @@ int main(int argc, char * argv [])
                 outputFile << gInduzido->exibirGrafo() << endl;
             }
             delete gInduzido;
+            limparTela();
             break;
         case 10:
             cout << "Digite o vertice desejado." << endl;
@@ -406,6 +423,7 @@ int main(int argc, char * argv [])
                     outputFile <<  "O vertice "<< id <<" nao eh de articulacao." << endl;
                 }
             }
+            limparTela();
             break;
         case 11:
             cout << "Grafo complementar: " << endl;
@@ -418,6 +436,7 @@ int main(int argc, char * argv [])
                 outputFile << gComp->exibirGrafo() << endl;
             }
             delete gComp;
+            limparTela();
             break;
         case 12:
             cout << "Digite o vertice inicial." << endl;
@@ -454,6 +473,7 @@ int main(int argc, char * argv [])
                     outputFile <<  "A aresta (" << ini << "," << fim << ") nao eh ponte." << endl;
                 }
             }
+            limparTela();
             break;
         case 13:
             cout << "Digite o vertice de inicio." << endl;
@@ -492,6 +512,7 @@ int main(int argc, char * argv [])
                     outputFile <<   "Os vertices (" << ini << "," << fim << ") nao sao adjacentes." << endl;
                 }
             }
+            limparTela();
             break;
         case 14:
             cout << "Digite o vertice de inicio." << endl;
@@ -525,7 +546,7 @@ int main(int argc, char * argv [])
                 if (desejaSalvar())
                     outputFile << "A aresta nao foi criada pois, pelo menos um vertice nao existe! " << endl;
             }
-
+            limparTela();
             break;
         case 15:
             cout << "Digite o vertice." << endl;
@@ -550,6 +571,7 @@ int main(int argc, char * argv [])
                 if (desejaSalvar())
                     outputFile << "O vertice "<< id <<" foi criado com sucesso." << endl;
             }
+            limparTela();
             break;
         case 16:
             cout << "Digite o vertice de inicio." << endl;
@@ -581,6 +603,7 @@ int main(int argc, char * argv [])
                 if (desejaSalvar())
                     outputFile << "A aresta nao foi removida pois, pelo menos um vertice nao existe! " << endl;
             }
+            limparTela();
             break;
         case 17:
             cout << "Digite o vertice." << endl;
@@ -606,6 +629,7 @@ int main(int argc, char * argv [])
                 if (desejaSalvar())
                     outputFile << "O vertice "<< id <<" nao existe!" << endl;
             }
+            limparTela();
             break;
         case 18:
             cout << "Digite o vertice desejado" << endl;
@@ -625,8 +649,9 @@ int main(int argc, char * argv [])
                 if (desejaSalvar())
                     outputFile << "O vertice "<< id <<" nao existe!" << endl;
             }
+            limparTela();
             break;
-            case 19:
+        case 19:
             cout << "Digite o vertice desejado" << endl;
             id = 0;
             cin >> id;
@@ -644,6 +669,7 @@ int main(int argc, char * argv [])
                 if (desejaSalvar())
                     outputFile << "O vertice "<< id <<" nao existe!" << endl;
             }
+            limparTela();
             break;
         case 20:
             cout << "Exibindo grafo transposto." <<endl;
@@ -655,6 +681,7 @@ int main(int argc, char * argv [])
                 outputFile << gTransp->exibirGrafo()<< endl;
 
             }
+            limparTela();
             break;
         case 21:
             outputFile.close();
