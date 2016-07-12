@@ -1,7 +1,14 @@
 #include "Grafo.h"
-
+std::random_device rd;
+std::mt19937 engine(rd());
 using namespace std;
-Grafo::Grafo(bool tipo)//construtor
+/*
+======================= Grafo(bool tipo) =======================
+	Construtor do grafo
+	Parametros:
+	bool tipo -> Booleano para definir se o grafo é orientado ou nao.
+*/
+Grafo::Grafo(bool tipo)
 {
     prim = NULL;
     aux = NULL;
@@ -9,22 +16,46 @@ Grafo::Grafo(bool tipo)//construtor
     orientada = tipo;
     ordem = 0;
 }
+/*
+======================= inicio() =======================
+	metodo para colocar o no aux apontando para a primeiro no
+	Parametros:
+	-nenhum-
+*/
 void Grafo::inicio()//coloca aux apontando para a primeiro no
 {
     aux = prim;
 }
+/*
+======================= inicio() =======================
+	metodo para colocar o no aux apontando para o no seguinte
+	Parametros:
+	-nenhum-
+*/
 void Grafo::proximoNo()//avanca o ponteiro aux ate o ultimo no
 {
     if(aux != NULL)
         aux = aux->getProxNo();
 }
-bool Grafo::grafoVazio()//verifica se a lista vazia
+/*
+======================= grafoVazio() =======================
+	funcao booleana para verificar se o grafo esta vazio
+	Parametros:
+	-nenhum-
+*/
+bool Grafo::grafoVazio()
 {
     if(prim == NULL)
         return true;
     else return false;
 }
-bool Grafo::existeIdNo(int id)//verifica se o no de id desejado existe
+/*
+======================= existeIdNo(int id) =======================
+	funcao booleana para verificar se existe determinado no
+	Parametros:
+	int id-> Inteiro contendo o id do no desejado
+*/
+bool Grafo::existeIdNo(int id)
 {
 
     if(!grafoVazio())
@@ -41,7 +72,13 @@ bool Grafo::existeIdNo(int id)//verifica se o no de id desejado existe
     else return false;
 
 }
-void Grafo::procurarIdNo(int id)//procurar o no com o id desejado até o ultimo no
+/*
+======================= procurarIdNo(int id) =======================
+	metodo para colocar o no aux apontando para o no de id desejado
+	Parametros:
+	int id-> Inteiro contendo o id do no
+*/
+void Grafo::procurarIdNo(int id)
 {
     if(!grafoVazio())
     {
@@ -54,7 +91,13 @@ void Grafo::procurarIdNo(int id)//procurar o no com o id desejado até o ultimo 
         }
     }
 }
-void Grafo::limpaVisitados()//coloca todos os nos como nao visitados
+/*
+======================= limpaVisitados() =======================
+	metodo para colocar o valor da variavel visitado como false
+	Parametros:
+	-nenhum-
+*/
+void Grafo::limpaVisitados()
 {
     inicio();
     while(aux!= NULL)
@@ -63,14 +106,21 @@ void Grafo::limpaVisitados()//coloca todos os nos como nao visitados
         proximoNo();
     }
 }
-void Grafo::inserirNo(int val) //insere um novo No ordenado no fim da lista
+/*
+======================= inserirNo(int val) =======================
+	metodo para inserir um novo no ordenado na lista de
+	adjacencia
+	Parametros:
+	val-> Inteiro contendo o id do no
+*/
+void Grafo::inserirNo(int val)
 {
+    No* c = new No();
+    c->setIdNo(val);
+    c->setArestas(NULL);
     if(prim == NULL)
     {
-        No* c = new No();
-        c->setIdNo(val);
         c->setProx(prim);
-        c->setArestas(NULL);
         c->setAntNo(NULL);
         prim = c;
         ultimo = c;
@@ -78,32 +128,48 @@ void Grafo::inserirNo(int val) //insere um novo No ordenado no fim da lista
     }
     else
     {
-        inicio();
-        while(aux->getProxNo() != NULL && aux->getId() <= val)
-            proximoNo();
-        if(aux->getId() < val)
+        if(val < ultimo->getId())
         {
-            No* c = new No();
-            c->setIdNo(val);
-            c->setProx(NULL);
-            c->setAntNo(aux);
-            aux->setProx(c);
-            ultimo = c;
+            inicio();
+            while(aux->getProxNo() != NULL && aux->getId() < val)
+                proximoNo();
+            if(aux == prim)
+            {
+                c->setAntNo(NULL);
+                c->setProx(aux);
+                prim = c;
+            }
+            else
+            {
+                c->setAntNo(aux->getAntNo());
+                c->setProx(aux);
+                No* aux2 = aux->getAntNo();
+                aux2->setProx(c);
+                aux->setAntNo(c);
+            }
         }
-        else if(aux->getId() == val)
+        else if(aux!= NULL && aux->getId() == val)
             cout << "No ja existente!" << endl;
         else
         {
-            No* c = new No();
-            c->setIdNo(val);
-            c->setAntNo(aux->getAntNo());
-            aux->setAntNo(c);
-            c->setProx(aux);
+            c->setProx(NULL);
+            c->setAntNo(ultimo);
+            ultimo->setProx(c);
+            ultimo = c;
         }
         ordem++;
     }
 }
-void Grafo::adicionarArco(int ini, int fim, int peso)//adiciona um arco
+/*
+======================= adicionar(int ini, int fim, int peso) =======================
+	metodo para adicionar uma ligacao do no de id ini
+	para o de id fim com o peso desejado
+	Parametros:
+	ini-> Inteiro cotendo o id do no inicial
+	fim-> Inteiro contendo o id do no final
+	peso-> Inteiro contendo o peso da ligacao
+*/
+void Grafo::adicionar(int ini, int fim, int peso)
 {
     procurarIdNo(ini);
     ListaAdjacencia* l = aux->getArestas();
@@ -123,23 +189,38 @@ void Grafo::adicionarArco(int ini, int fim, int peso)//adiciona um arco
         aux->setGrauNo(aux->getGrauNo() + 1);
     }
 }
-
-void Grafo::adicionarAresta(int ini, int fim, int peso)//adiciona aresta/arco de acordo com o tipo de grafo
+/*
+======================= adicionarAresta(int ini, int fim, int peso) =======================
+	metodo para adicionar uma aresta ou arco do no de id ini
+	para o de id fim com o peso desejado
+	Parametros:
+	ini-> Inteiro cotendo o id do no inicial
+	fim-> Inteiro contendo o id do no final
+	peso-> Inteiro contendo o peso da ligacao
+*/
+void Grafo::adicionarAresta(int ini, int fim, int peso)
 {
     if(existeIdNo(ini) && existeIdNo(fim) && ini!=fim)
     {
         if(orientada)
-            adicionarArco(ini, fim, peso);
+            adicionar(ini, fim, peso);
         else
         {
-            adicionarArco(ini,fim, peso);
-            adicionarArco(fim, ini, peso);
+            adicionar(ini,fim, peso);
+            adicionar(fim, ini, peso);
         }
     }
 }
-int Grafo::grauNo(int id)//retorna o grau do vertice desejado
+/*
+======================= grauNo(int id) =======================
+	funcao inteira para verificar e retornar o grau do No
+	desejado
+	Parametros:
+	id-> Inteiro contendo o id do no desejado
+*/
+int Grafo::grauNo(int id)
 {
-    if(existeIdNo(id))//verifica se existe o no de ID desejado
+    if(existeIdNo(id))
     {
         procurarIdNo(id);
         return aux->getGrauNo();
@@ -147,8 +228,14 @@ int Grafo::grauNo(int id)//retorna o grau do vertice desejado
     else//caso nao encontre o no, retorna o grau como -1
         return -1;
 }
-
-int Grafo::grauGrafo()//calcula o grau do grafo; Grau do grafo = grau do maior no
+/*
+======================= grauGrafo() =======================
+	funcao inteira para verificar e retornar o grau do grafo
+	desejado
+	Parametros:
+	-nenhum-
+*/
+int Grafo::grauGrafo()
 {
     int grauGrafo = -1;
     for(int i = 1; i<=ordem; i++)
@@ -158,7 +245,15 @@ int Grafo::grauGrafo()//calcula o grau do grafo; Grau do grafo = grau do maior n
     }
     return grauGrafo;
 }
-string Grafo::exibirGrafo() //retorna uma string como grafo em forma de lista de adjacencia
+/*
+======================= exibirGrafo() =======================
+	funcao do tipo String para armazenar o grafo no formato
+	V1 V2 P, onde o par (V1,V2) corresponde a uma ligacao de
+	peso P
+	Parametros:
+	-nenhum-
+*/
+string Grafo::exibirGrafo()
 {
     stringstream stream;
     inicio();
@@ -166,7 +261,6 @@ string Grafo::exibirGrafo() //retorna uma string como grafo em forma de lista de
     stream << "\n";
     while(aux != NULL)
     {
-        stream << "Vertice ID: " << aux->getId();
 
         if(aux->getArestas()!= NULL)
         {
@@ -174,16 +268,22 @@ string Grafo::exibirGrafo() //retorna uma string como grafo em forma de lista de
             lbaux->inicio();
             while(lbaux->getAux()!= NULL)
             {
-                stream << "-(" << lbaux->getAux()->getPeso()<<")-> " << lbaux->getAux()->getId() << " ";
+                stream << aux->getId() << " " << lbaux->getAux()->getId() << " " << lbaux->getAux()->getPeso()<< "\n";
                 lbaux->proximaAresta();
             }
         }
-        stream << "\n";
         proximoNo();
     }
     return stream.str();
 }
-bool Grafo::verificarAdjacencia(int id1, int id2)//verifica se existe uma aresta ligando os dois Nos desejados
+/*
+======================= verificarAdjacencia(int id1, int id2) =======================
+	funcao Booleana para verificar se dois nos sao adjacentes
+	Parametros:
+	id1-> Inteiro contendo o valor do no inicial
+	id2-> Inteiro contendo o valor do no final
+*/
+bool Grafo::verificarAdjacencia(int id1, int id2)
 {
     if(existeIdNo(id1) && existeIdNo(id2))
     {
@@ -205,7 +305,14 @@ bool Grafo::verificarAdjacencia(int id1, int id2)//verifica se existe uma aresta
     }
     return false;
 }
-string Grafo::listarAdjacentesNo(int id) //imprime os adjacentes do No de Id desejado
+/*
+======================= listarAdjacentesNo(int id) =======================
+	funcao do tipo String para armazenar e retornar todos os
+	adjacentes de um no de id desejado
+	Parametros:
+	id-> Inteiro contendo o id do no desejado
+*/
+string Grafo::listarAdjacentesNo(int id)
 {
     stringstream stream;
     stream << "\n";
@@ -214,14 +321,13 @@ string Grafo::listarAdjacentesNo(int id) //imprime os adjacentes do No de Id des
     {
         procurarIdNo(id);
         stream << "No ID: " << aux->getId() << " e seus adjacentes.\n";
-        stream << aux->getId();
         lbaux = aux->getArestas();
         if(lbaux!= NULL)
         {
             lbaux->inicio();
             while(lbaux->getAux()!= NULL)
             {
-                stream << "-("<<lbaux->getAux()->getPeso()<<")-> " << lbaux->getAux()->getId() << " ";
+                stream << aux->getId() << " " << lbaux->getAux()->getId() << " " <<lbaux->getAux()->getPeso()<< "\n";
                 lbaux->proximaAresta();
             }
         }
@@ -230,11 +336,24 @@ string Grafo::listarAdjacentesNo(int id) //imprime os adjacentes do No de Id des
         stream << "O no de ID: " << id << " nao foi encontrado!\n";
     return stream.str();
 }
-int Grafo::ordemGrafo() // retorna a ordem do grafo (numero de nos)
+/*
+======================= ordemGrafo() =======================
+	funcao do tipo Inteiro para retornar a ordem do grafo
+	Parametros:
+	-nenhum-
+*/
+int Grafo::ordemGrafo()
 {
     return ordem;
 }
-int Grafo::verificarKRegular()//verifica se o grafo é k regular caso seja, retorna o valor de K
+/*
+======================= verificarKRegular() =======================
+	funcao do tipo Inteiro para verificar se o grafo eh
+	K-regular
+	Parametros:
+	-nenhum-
+*/
+int Grafo::verificarKRegular()
 {
     if(!grafoVazio())
     {
@@ -253,14 +372,26 @@ int Grafo::verificarKRegular()//verifica se o grafo é k regular caso seja, reto
     }
     else return -1;
 }
-bool Grafo::verificarGrafoCompleto() //verifica se o grafo é completo
+/*
+======================= verificarGrafoCompleto() =======================
+	funcao do tipo Booleana para verificar se o grafo eh completo
+	Parametros:
+	-nenhum-
+*/
+bool Grafo::verificarGrafoCompleto()
 {
     if(verificarKRegular() == (ordem-1))//um grafo completo é um grafo n-1 regular, onde n = numero de nos
         return true;
     else
         return false;
 }
-bool Grafo::verificarGrafoConexo()//verifica se o grafo é conexo
+/*
+======================= verificarGrafoConexo() =======================
+	funcao do tipo Inteiro para verificar se o grafo eh conexo
+	Parametros:
+	-nenhum-
+*/
+bool Grafo::verificarGrafoConexo()
 {
     ListaAdjacencia* l;
     inicio();
@@ -298,8 +429,13 @@ bool Grafo::verificarGrafoConexo()//verifica se o grafo é conexo
     else
         return false;
 }
-
-void Grafo::removerNo(int id)//remove um determinado no
+/*
+======================= removerNo(int id) =======================
+	metodo para remover um no de id desejado
+	Parametros:
+	id-> Inteiro contendo o id do no desejado
+*/
+void Grafo::removerNo(int id)
 {
     ListaAdjacencia* l = NULL;
     if(existeIdNo(id))
@@ -345,7 +481,13 @@ void Grafo::removerNo(int id)//remove um determinado no
         delete n;
     }
 }
-bool Grafo::verificarGrafoBipartido() //verifica se o grafo é bipartido
+/*
+======================= verificarGrafoBipartido() =======================
+	funcao do tipo Inteiro para verificar se o grafo eh bipartido
+	Parametros:
+	-nenhum-
+*/
+bool Grafo::verificarGrafoBipartido()
 {
     No* temporario = NULL;
     int vertice[(ultimo->getId()+1)];//cria um vetor com os grupos
@@ -365,7 +507,15 @@ bool Grafo::verificarGrafoBipartido() //verifica se o grafo é bipartido
     }
     return true;
 }
-bool Grafo::bipartidoAux(No* n, int vertice[], int c)//funcao auxiliar da verificarGrafoBipartido
+/*
+======================= bipartidoAux(No* n, int vertice[], int c) =======================
+	funcao do tipo Booleana para auxiliar a funcao verificarGrafoBipartido()
+	Parametros:
+	n-> No* no temporario
+	vertice-> Inteiro[] vetor com os grupos
+	c-> Inteiro contendo iteracao
+*/
+bool Grafo::bipartidoAux(No* n, int vertice[], int c)
 {
     vertice[n->getId()] = 1-c;
     ListaAdjacencia* l = aux->getArestas();
@@ -388,7 +538,13 @@ bool Grafo::bipartidoAux(No* n, int vertice[], int c)//funcao auxiliar da verifi
     return false;
 
 }
-Grafo* Grafo::grafoComplementar()//retorna o grafo complementar
+/*
+======================= grafoComplementar() =======================
+	funcao do tipo Grafo* para gerar e retornar o grafo complementar
+	Parametros:
+	-nenhum-
+*/
+Grafo* Grafo::grafoComplementar()
 {
     Grafo* g = new Grafo(orientada);
     for(int  i = 0; i<ordem; i++)
@@ -406,8 +562,13 @@ Grafo* Grafo::grafoComplementar()//retorna o grafo complementar
     }
     return g;
 }
-
-Grafo* Grafo::grafoInduzido(int tam, int vet[])//retorna o grafo induzido
+/*
+======================= grafoInduzido() =======================
+	funcao do tipo Grafo* para gerar e retornar o grafo induzido
+	Parametros:
+	-nenhum-
+*/
+Grafo* Grafo::grafoInduzido(int tam, int vet[])
 {
     ListaAdjacencia* l;
     Grafo* g = new Grafo(orientada);
@@ -448,26 +609,44 @@ Grafo* Grafo::grafoInduzido(int tam, int vet[])//retorna o grafo induzido
     }
     return g;
 }
-
-int Grafo::contarComponentesConexas()//retorna o numero de componentes conexas
+/*
+======================= contarComponentesConexas() =======================
+	funcao do tipo Inteiro para retornar o numero de componentes conexas
+	do grafo
+	Parametros:
+	-nenhum-
+*/
+int Grafo::contarComponentesConexas()
 {
-    int* componentes = new int[(ultimo->getId()+1)];
-    int cc = 0;
-    for(int i = 0; i<(ultimo->getId()+1); i++)
-        componentes[i] = 0;
-    inicio();
-    while(aux!=NULL)
+    if(ultimo!=NULL)
     {
-        if(componentes[aux->getId()] == 0)
+        int* componentes = new int[(ultimo->getId()+1)];
+        int cc = 0;
+        for(int i = 0; i<(ultimo->getId()+1); i++)
+            componentes[i] = 0;
+        inicio();
+        while(aux!=NULL)
         {
-            cc++;
-            componentesConexasAux(aux, cc, componentes);
+            if(componentes[aux->getId()] == 0)
+            {
+                cc++;
+                componentesConexasAux(aux, cc, componentes);
+            }
+            proximoNo();
         }
-        proximoNo();
+        return cc;
     }
-    return cc;
+    else return 0;
 }
-void Grafo::componentesConexasAux(No* temp, int cc, int* componentes)//funcao auxiliar da contarComponentes conexas
+/*
+======================= componentesConexasAux(No* temp, int cc, int* componentes) =======================
+	metodo auxiliar da funcao contarComponentesConexas()
+	Parametros:
+	temp-> No* no temporario
+	cc-> Inteiro contendo o numero de componentes conexas atuais
+	Componentes-> Inteiro* vetor contendo as componentes autais de cada no
+*/
+void Grafo::componentesConexasAux(No* temp, int cc, int* componentes)
 {
     int exTop = 0, nTop = 0;
     ListaAdjacencia* l;
@@ -499,8 +678,15 @@ void Grafo::componentesConexasAux(No* temp, int cc, int* componentes)//funcao au
         }
     }
 }
+/*
+======================= verificarArestaPonte(int ini, int fim) =======================
+	funcao do tipo Booleana para verificar se a aresta desejada eh ponte
+	Parametros:
+	ini-> Inteiro contendo o no inicial
+	fim-> Inteiro contendo o no final
 
-bool Grafo::verificarArestaPonte(int ini, int fim)//verifica se a aresta desejada é uma ponte
+*/
+bool Grafo::verificarArestaPonte(int ini, int fim)
 {
     int pesoFim = 0;
     ListaAdjacencia* l ;
@@ -554,8 +740,13 @@ bool Grafo::verificarArestaPonte(int ini, int fim)//verifica se a aresta desejad
     }
     else return false;
 }
-
-bool Grafo::verificarNoArticulacao(int idBusca)//verifica se um dado no é de articulacao
+/*
+======================= verificarNoArticulacao(int idBusca) =======================
+	funcao do tipo Booleana para verificar se o no desejado eh de articulacao
+	Parametros:
+	idBusca-> Inteiro contendo o id do no desejado
+*/
+bool Grafo::verificarNoArticulacao(int idBusca)
 {
     if(existeIdNo(idBusca))
     {
@@ -582,6 +773,12 @@ bool Grafo::verificarNoArticulacao(int idBusca)//verifica se um dado no é de ar
     else return false;
 
 }
+/*
+======================= grafoTransposto() =======================
+	funcao do tipo Grafo* retornar o grafo transposto
+	Parametros:
+	-nenhum-
+*/
 Grafo* Grafo::grafoTransposto()
 {
     Grafo* transp = new Grafo(orientada);
@@ -609,6 +806,7 @@ Grafo* Grafo::grafoTransposto()
     }
     return transp;
 }
+
 int* Grafo::fechoTransitivoAux(int id)
 {
     stack<int> conjunto;
@@ -655,7 +853,7 @@ int* Grafo::fechoTransitivoAux(int id)
     vetConjunto[0] = conjunto.size()+1;//guardar tamanho no indice 0
     for(int i = 1; i<vetConjunto[0]; i++)
     {
-            vetConjunto[i] = conjunto.top();
+        vetConjunto[i] = conjunto.top();
         conjunto.pop();
     }
     return vetConjunto;
@@ -726,7 +924,154 @@ void Grafo::removerAresta(int ini, int fim)//remove uma aresta
         }
     }
 }
-void Grafo::algoritmoPrim(){
+ListaDEncad* Grafo::heuristica()
+{
+//heuristica apenas ordena
+    ListaDEncad* listaIds = new ListaDEncad();
+    inicio();
+    while(aux!=NULL)
+    {
+        listaIds->inserirOrdGrau(aux->getId(), aux->getGrauNo());
+        proximoNo();
+    }
+    return listaIds;
+}
+bool Grafo::verificadorViabilidade(ListaDEncad* conjSolucao)
+{
+    int ElementosConj[conjSolucao->getTamanho()];
+    int i = 0, numCC = 0;
+    conjSolucao->inicio();
+    while(conjSolucao->getIt()!=NULL)
+    {
+        ElementosConj[i] = conjSolucao->getIt()->getId();
+        i++;
+        conjSolucao->proxBloco();
+    }
+    Grafo* gInd = grafoInduzido(i+1, ElementosConj);
+    numCC = gInd->contarComponentesConexas();
+    if(numCC==conjSolucao->getTamanho())
+    {
+        delete gInd;
+        return true;
+    }
+    else
+    {
+        delete gInd;
+        return false;
+    }
+}
+ListaDEncad* Grafo::algoritmoGuloso()
+{
+    ListaDEncad* candidatos;
+    ListaAdjacencia* adjacentes;
+    candidatos = heuristica();
+    ListaDEncad* conjSolucao = new ListaDEncad();
+    int idAtual = 0, adjAtual = 0, grauAtual = 0;
+    candidatos->inicio();
+    while(candidatos->getIt()!=NULL)
+    {
+        idAtual = candidatos->getIt()->getId();
+        grauAtual = candidatos->getIt()->getGrau();
+        procurarIdNo(idAtual);
+        adjacentes = aux->getArestas();
+        if(adjacentes!=NULL)
+        {
+            adjacentes->inicio();
+            while(adjacentes->getAux()!=NULL)
+            {
+                adjAtual = adjacentes->getAux()->getId();
+                candidatos->removerId(adjAtual);
+                adjacentes->proximaAresta();
+            }
+            conjSolucao->inserirOrdGrau(idAtual, grauAtual);
+        }
+        candidatos->removerId(idAtual);
+        candidatos->inicio();
+    }
+    if(verificadorViabilidade(conjSolucao))
+        return conjSolucao;
+    else
+        return NULL;
+
+}
+ListaDEncad* Grafo::algGulosoAleatoriedadeParam(double alfa)
+{
+    ListaDEncad* candidatos;
+    ListaAdjacencia* adjacentes;
+    candidatos = heuristica();
+    ListaDEncad* conjSolucao = new ListaDEncad();
+    ListaDEncad* conjuntoK = new ListaDEncad();
+    int idAtual = 0, adjAtual = 0, grauAtual = 0, k = 0, tAlfa = 0;
+    tAlfa = alfa*candidatos->getTamanho();
+    if(tAlfa!=0)
+    {
+        std::uniform_int_distribution<int> dist(0, tAlfa);
+        k = dist(engine);
+    }
+    candidatos->inicio();
+    for(int j =0; j<k; j++)
+    {
+        if(candidatos->getIt()!=NULL)
+        {
+            conjuntoK->inserirOrdGrau(candidatos->getIt()->getId(), candidatos->getIt()->getGrau());
+            candidatos->proxBloco();
+        }
+    }
+    conjuntoK->inicio();
+    while(conjuntoK->getIt()!=NULL)
+    {
+        idAtual = conjuntoK->getIt()->getId();
+        grauAtual = conjuntoK->getIt()->getGrau();
+        procurarIdNo(idAtual);
+        adjacentes = aux->getArestas();
+        if(adjacentes!=NULL)
+        {
+            adjacentes->inicio();
+            while(adjacentes->getAux()!=NULL)
+            {
+                adjAtual = adjacentes->getAux()->getId();
+                conjuntoK->removerId(adjAtual);
+                adjacentes->proximaAresta();
+            }
+        }
+        conjSolucao->inserirOrdGrau(idAtual, grauAtual);
+        conjuntoK->removerId(idAtual);
+        conjuntoK->inicio();
+    }
+    conjSolucao->inicio();
+    int cont = 0;
+    while(conjSolucao->getIt()!=NULL)
+    {
+        cont++;
+        //cout << "ID: " << conjSolucao->getIt()->getId() << endl;
+        conjSolucao->proxBloco();
+    }
+    cout << "Tamanho do MIS: " << cont << endl;
+    if(verificadorViabilidade(conjSolucao))
+        cout << "Solucao Viavel" << endl;
+    else
+        cout << "Solucao inviavel" << endl;
+
+}
+void Grafo::algGulosoAleatoriedadeAuto(int tam, int conjAlfa[])
+{
+    ListaDEncad* melhorSol;
+    double prob[tam];
+    double media[tam];
+    double q[tam];
+    int maxIt = 500;
+    int itAt = 0;
+    for(int i = 0; i < tam; i++)
+    {
+        prob[i] = 1/tam;
+        media[i] = 0;
+        q[i] = 0;
+    }
+    bool bAtualizacao = true;
+    while(itAt <= maxIt)
+    {
+
+    }
 
 }
 Grafo::~Grafo()//destrutor
@@ -741,5 +1086,4 @@ Grafo::~Grafo()//destrutor
         p = t;
 
     }
-    cout << "Grafo apagado!" << endl;;
 }

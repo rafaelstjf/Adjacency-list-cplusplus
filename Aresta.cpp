@@ -1,6 +1,4 @@
-
 #include "Aresta.h"
-
 Aresta::Aresta()//construtor da classe
 {
     proximo = NULL;

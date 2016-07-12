@@ -1,8 +1,8 @@
 #include <iostream>
 #include <stdlib.h>
 #include <fstream>
-#include<string>
-#include<stdlib.h>
+#include <string>
+#include <stdlib.h>
 #include "Grafo.h"
 using namespace std;
 std::fstream inputFile;
@@ -10,6 +10,7 @@ std::fstream outputFile;
 void menu()
 {
     cout << "Funcionalidades: " <<endl;
+    cout << " 0 - Ajuda." << endl;
     cout << " 1 - Exibir o grafo." << endl;
     cout << " 2 - Retornar o grau do vertice desejado." << endl;
     cout << " 3 - Retornar o grau do grafo." << endl;
@@ -23,24 +24,26 @@ void menu()
     cout << "11 - Retornar o grafo complementar." << endl;
     cout << "12 - Verificar se uma dada aresta eh ponte." << endl;
     cout << "13 - Verificar se dois vertices sao adjacentes." << endl;
-    cout << "14 - Adicionar aresta" << endl;
+    cout << "14 - Adicionar aresta/arco" << endl;
     cout << "15 - Adicionar vertice" << endl;
-    cout << "16 - Remover aresta" << endl;
+    cout << "16 - Remover aresta/arco" << endl;
     cout << "17 - Remover vertice" << endl;
     cout << "18 - Fecho transitivo direto(fechado) de um vertice." << endl;
     cout << "19 - Fecho transitivo indireto(fechado) de um vertice." << endl;
     cout << "20 - Exibir o grafo transposto." << endl;
-    cout << "21 - Sair." << endl;
+    cout << "21 - Algoritmo guloso conjunto independente maximo." << endl;
+    cout << "22 - Algoritmo guloso com aleatoriedade passada como parametro." << endl;
+    cout << "23 - Sair." << endl;
 }
 Grafo* gerarGrafo()
 {
 //obter tamanho do grafo
     string str;
-    char temporaria[5], tempIni[5], tempFim[5], tempPeso[5];//vetores temporarios
+    char temporaria[10], tempIni[8], tempFim[8], tempPeso[8];//vetores temporarios
     char opcao = '\0';
     bool orientado = false;
     int ini = 0, fim = 0, j = 0,peso = 0, contadorEspaco = 0, tamanho = 0, i = 0;
-    for(int k = 0; k<5; k++)//zerando o vetor de char
+    for(int k = 0; k<10; k++)//zerando o vetor de char
         temporaria[k] = '\0';
     inputFile.clear(); //volta o estado para good
     inputFile.seekg(0, ios::beg); //volta ao inicio
@@ -70,15 +73,21 @@ Grafo* gerarGrafo()
         i++;//aumenta o indice da string
     }
     // preencher e verificar se eh orientada
-    bool matrizAdj[tamanho][tamanho];
-    int matrizPeso[tamanho][tamanho];
+    cout << "O grafo eh orientado? [S/N]" << endl;
+    cin >> opcao;
+    while(opcao!='S' && opcao!='N')
+    {
+        cout << "Opcao errada! Digite S ou N." << endl;
+        cin >> opcao;
+    }
+    if(opcao=='S')
+        orientado = true;
+    else if(opcao == 'N')
+        orientado = false;
+    Grafo* g = new Grafo(orientado);
     for(int t = 0; t<tamanho; t++)
-        for(int k  = 0; k<tamanho; k++)
-        {
-            matrizAdj[t][k] = false;
-            matrizPeso[t][k] = 0;
-        }
-    for(int k = 0; k<5; k++) //colocando null em todos os indices do vetor temporario
+        g->inserirNo(t);
+    for(int k = 0; k<8; k++) //colocando null em todos os indices do vetor temporario
     {
         tempIni[k] = '\0';
         tempFim[k] = '\0';
@@ -117,38 +126,19 @@ Grafo* gerarGrafo()
         if(contadorEspaco==1)
             fim = atoi(tempFim);
         peso = atoi(tempPeso);
-        matrizAdj[ini][fim] = true;
-        matrizPeso[ini][fim] = peso;
+        g->adicionarAresta(ini, fim,peso);
         contadorEspaco = 0;
         fim = 0;
         ini = 0;
         peso = 0;
         j = 0;
-        for(int k = 0; k<5; k++) //cotocando null em todos os indices do vetor temporario
+        for(int k = 0; k<8; k++) //cotocando null em todos os indices do vetor temporario
         {
             tempIni[k] = '\0';
             tempFim[k] = '\0';
             tempPeso[k] = '\0';
         }
     }
-    cout << "O grafo eh orientado? [S/N]" << endl;
-    cin >> opcao;
-    while(opcao!='S' && opcao!='N')
-    {
-        cout << "Opcao errada! Digite S ou N." << endl;
-        cin >> opcao;
-    }
-    if(opcao=='S')
-        orientado = true;
-    else if(opcao == 'N')
-        orientado = false;
-    Grafo* g = new Grafo(orientado);
-    for(int t = 0; t<tamanho; t++)
-        g->inserirNo(t);
-    for(int t = 0; t<tamanho; t++)
-        for(int k = 0; k<tamanho; k++)
-            if(matrizAdj[t][k] ==true)
-                g->adicionarAresta(t, k, matrizPeso[t][k]);
     return g;
 }
 bool desejaSalvar()
@@ -168,9 +158,6 @@ bool desejaSalvar()
 }
 void limparTela()
 {
-#ifdef WIN32
-    system("cls");
-#endif // WIN32
 #ifdef LINUX
     system("clear");
 #endif // LINUX
@@ -180,10 +167,12 @@ int main(int argc, char * argv [])
     Grafo* grafo = NULL;
     int tamanho  = 0, opcaoEscolhida = -1;
     int id = 0, ini = 0, fim = 0, tam = -1, peso = -1;
+    double alfa = 0;
     int vet[tam];
     Grafo* gComp = NULL;
     Grafo* gInduzido = NULL;
     Grafo* gTransp = NULL;
+    ListaDEncad* conjSolucaoGuloso = new ListaDEncad();
     if (argc == 3)
     {
         inputFile.open (argv[1], ios::in);//abre o arquivo
@@ -220,6 +209,12 @@ int main(int argc, char * argv [])
         cin >> opcaoEscolhida;
         switch (opcaoEscolhida)
         {
+        case 0:
+            cout << "O grafo sempre sera exibido da forma: V1 V2 P, onde V1 e V2 correspondem a uma adjacencia com peso P, V1 representa o vertice inicial e V2 o vertice final da adjacencia." << endl;
+            cout << "Ao final de cada funcao sera possivel salvar o resultado no arquivo de saida." << endl;
+            system("pause");
+            limparTela();
+            break;
         case 1:
             cout << "Exibindo grafo." <<endl;
             cout << grafo->exibirGrafo();
@@ -684,9 +679,28 @@ int main(int argc, char * argv [])
             limparTela();
             break;
         case 21:
+            cout << "Exibindo o resultado do algoritmo." <<endl;
+            conjSolucaoGuloso = grafo->algoritmoGuloso();
+            if(conjSolucaoGuloso!=NULL)
+                cout << "Tamanho do MIS: " << conjSolucaoGuloso->getTamanho() << endl;
+            else
+                cout << "Solucao inviavel!" << endl;
+            break;
+        case 22:
+            cout << "Digite o valor do alfa: "<< endl;
+            cin >> alfa;
+            while(alfa < 0 || alfa > 1)
+            {
+                cout << "Alfa invalido! Digite outro valor." << endl;
+                cin >> alfa;
+            }
+            grafo->algGulosoAleatoriedadeParam(alfa);
+            break;
+        case 23:
             outputFile.close();
             inputFile.close();
             delete grafo;
+            cout << "Grafo apagado!" << endl;
             exit(0);
             break;
 
