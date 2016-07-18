@@ -709,6 +709,7 @@ int main(int argc, char * argv [])
                 outputFile << "Tamanho do MIS: " << conjSolucaoGuloso->getTamanho() << endl;
             }
             delete conjSolucaoGuloso;
+            limparTela();
             break;
         case 22:
             cout << "Digite o valor do alfa: "<< endl;
@@ -736,6 +737,7 @@ int main(int argc, char * argv [])
                 outputFile << "Alfa usado: " << conjSolucaoGuloso->getAlfa() << endl;
             }
             delete conjSolucaoGuloso;
+            limparTela();
             break;
         case 23:
             cout << "Digite o tamanho do conjunto de alfas." << endl;
@@ -779,6 +781,7 @@ int main(int argc, char * argv [])
                 outputFile << "Melhor Alfa: " << conjSolucaoGuloso->getAlfa() << endl;
             }
             delete conjSolucaoGuloso;
+            limparTela();
             break;
         case 24:
             outputFile.close();
