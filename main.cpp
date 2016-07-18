@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <stdlib.h>
+#include <random>
 #include "Grafo.h"
 using namespace std;
 std::fstream inputFile;
@@ -31,9 +32,10 @@ void menu()
     cout << "18 - Fecho transitivo direto(fechado) de um vertice." << endl;
     cout << "19 - Fecho transitivo indireto(fechado) de um vertice." << endl;
     cout << "20 - Exibir o grafo transposto." << endl;
-    cout << "21 - Algoritmo guloso conjunto independente maximo." << endl;
-    cout << "22 - Algoritmo guloso com aleatoriedade passada como parametro." << endl;
-    cout << "23 - Sair." << endl;
+    cout << "21 - Algoritmo construtivo guloso para o conjunto independente maximo (MIS)." << endl;
+    cout << "22 - Algoritmo construtivo guloso com aleatoriedade passada como parametro." << endl;
+    cout << "23 - Algoritmo construtivo guloso com aleatoriedade ajustada automaticamente." << endl;
+    cout << "24 - Sair." << endl;
 }
 Grafo* gerarGrafo()
 {
@@ -161,14 +163,19 @@ void limparTela()
 #ifdef LINUX
     system("clear");
 #endif // LINUX
+#ifdef _WIN32
+    system("cls");
+#endif // WIN32
 }
 int main(int argc, char * argv [])
 {
     Grafo* grafo = NULL;
     int tamanho  = 0, opcaoEscolhida = -1;
-    int id = 0, ini = 0, fim = 0, tam = -1, peso = -1;
+    int id = 0, ini = 0, fim = 0, tam = -1, peso = -1, seed = 0;
     double alfa = 0;
+    char help = '\0';
     int vet[tam];
+    double vetorAlfas[tam];
     Grafo* gComp = NULL;
     Grafo* gInduzido = NULL;
     Grafo* gTransp = NULL;
@@ -201,6 +208,14 @@ int main(int argc, char * argv [])
     cout << "Criando grafo a partir do arquivo. "<< endl;
     grafo = gerarGrafo();
     tamanho = grafo->ordemGrafo();
+    cout << "Digite o valor da semente para esta execucao: " << endl;
+    cin >> seed;
+    while(seed < 0)
+    {
+        cout << "Semente invalida! Digite outro valor." << endl;
+        cin >> seed;
+    }
+    srand(seed);
     cout << "Grafo criado com sucesso!" << endl;
     cout << "----------------------------------"<< endl;
     while(true)
@@ -212,7 +227,9 @@ int main(int argc, char * argv [])
         case 0:
             cout << "O grafo sempre sera exibido da forma: V1 V2 P, onde V1 e V2 correspondem a uma adjacencia com peso P, V1 representa o vertice inicial e V2 o vertice final da adjacencia." << endl;
             cout << "Ao final de cada funcao sera possivel salvar o resultado no arquivo de saida." << endl;
-            system("pause");
+            cout << "Digite 'c' para continuar." << endl;
+            while(help != 'c')
+                cin >> help;
             limparTela();
             break;
         case 1:
@@ -353,14 +370,12 @@ int main(int argc, char * argv [])
             break;
         case 9:
             cout << "Digite o tamanho do conjunto de vertices." << endl;
-            tam = -1;
+            cin >> tam;
             while(tam < 0)
             {
+                cout << "Tamanho invalido! Digite novamente." << endl;
                 cin >> tam;
-                if(tam<0)
-                    cout << "Tamanho invalido! Digite novamente." << endl;
             }
-
             for(int i = 0; i<tam; i++)
             {
                 cout << "Digite o vertice." << endl;
@@ -679,12 +694,21 @@ int main(int argc, char * argv [])
             limparTela();
             break;
         case 21:
-            cout << "Exibindo o resultado do algoritmo." <<endl;
+
             conjSolucaoGuloso = grafo->algoritmoGuloso();
             if(conjSolucaoGuloso!=NULL)
+            {
+                cout << "Exibindo o resultado do algoritmo." <<endl;
                 cout << "Tamanho do MIS: " << conjSolucaoGuloso->getTamanho() << endl;
+            }
             else
-                cout << "Solucao inviavel!" << endl;
+                return -2;
+            if(desejaSalvar())
+            {
+                outputFile << "Algoritmo construtivo guloso." << endl;
+                outputFile << "Tamanho do MIS: " << conjSolucaoGuloso->getTamanho() << endl;
+            }
+            delete conjSolucaoGuloso;
             break;
         case 22:
             cout << "Digite o valor do alfa: "<< endl;
@@ -694,16 +718,75 @@ int main(int argc, char * argv [])
                 cout << "Alfa invalido! Digite outro valor." << endl;
                 cin >> alfa;
             }
-            grafo->algGulosoAleatoriedadeParam(alfa);
+            conjSolucaoGuloso = grafo->algGulosoAleatoriedadeParam(alfa);
+            conjSolucaoGuloso->setSemente(seed);
+            if(conjSolucaoGuloso!=NULL)
+            {
+                cout << "Algoritmo construtivo guloso com aleatoriedade passada como parametro." <<endl;
+                cout << "Tamanho do MIS: " << conjSolucaoGuloso->getTamanho() << endl;
+                cout << "Semente usada: " << conjSolucaoGuloso->getSemente() << endl;
+            }
+            else
+                return -2;
+            if(desejaSalvar())
+            {
+                outputFile << "Algoritmo construtivo guloso com aleatoriedade passada como parametro." << endl;
+                outputFile << "Tamanho do MIS: " << conjSolucaoGuloso->getTamanho() << endl;
+                outputFile << "Semente usada: " << conjSolucaoGuloso->getSemente() << endl;
+                outputFile << "Alfa usado: " << conjSolucaoGuloso->getAlfa() << endl;
+            }
+            delete conjSolucaoGuloso;
             break;
         case 23:
+            cout << "Digite o tamanho do conjunto de alfas." << endl;
+            cin >> tam;
+            while(tam < 0)
+            {
+                cout << "Tamanho invalido! Digite novamente." << endl;
+                cin >> tam;
+            }
+            for(int i = 0; i<tam; i++)
+            {
+                cout << "Digite o alfa." << endl;
+                cin >> vetorAlfas[i];
+                while(vetorAlfas[i] < 0)
+                {
+                    cout << "Alfa invalido! Digite novamente." << endl;
+                    cin >> vetorAlfas[i];
+                }
+            }
+            conjSolucaoGuloso = grafo->algGulosoAleatoriedadeAuto(tam, vetorAlfas);
+            if(conjSolucaoGuloso!=NULL)
+            {
+                cout << "Algoritmo construtivo guloso com aleatoriedade ajustada automaticamente.." <<endl;
+                cout << "Tamanho do MIS: " << conjSolucaoGuloso->getTamanho() << endl;
+                cout << "Semente usada: " << conjSolucaoGuloso->getSemente() << endl;
+                cout << "Alfas usados: " << endl;
+                for(int i = 0; i<tam; i++)
+                    cout << vetorAlfas[i] << endl;
+                cout << "Melhor Alfa: " << conjSolucaoGuloso->getAlfa() << endl;
+            }
+            else
+                return -2;
+            if(desejaSalvar())
+            {
+                outputFile << "Algoritmo construtivo guloso com aleatoriedade ajustada automaticamente.." <<endl;
+                outputFile << "Tamanho do MIS: " << conjSolucaoGuloso->getTamanho() << endl;
+                outputFile << "Semente usada: " << conjSolucaoGuloso->getSemente() << endl;
+                outputFile << "Alfas usados: " << endl;
+                for(int i = 0; i<tam; i++)
+                    outputFile << vetorAlfas[i] << endl;
+                outputFile << "Melhor Alfa: " << conjSolucaoGuloso->getAlfa() << endl;
+            }
+            delete conjSolucaoGuloso;
+            break;
+        case 24:
             outputFile.close();
             inputFile.close();
             delete grafo;
             cout << "Grafo apagado!" << endl;
             exit(0);
             break;
-
         default:
             cout << "Opcao invalida! Digite novamente." << endl;
             cin >> opcaoEscolhida;
@@ -713,4 +796,5 @@ int main(int argc, char * argv [])
 
 /*Codigos dos erros
     -1 = erro na abertura dos arquivos
+    -2 = erro na solucao do algoritmo construtivo guloso
 */

@@ -6,6 +6,8 @@ ListaDEncad::ListaDEncad()//construtor
     it = NULL;
     ult = NULL;
     tamanho = 0;
+    semente = 0;
+    alfa  = 0.0;
 }
 void ListaDEncad::inicio()
 {
@@ -145,6 +147,18 @@ void ListaDEncad::removerId(int id)
 int ListaDEncad::getTamanho()
 {
     return tamanho;
+}
+int ListaDEncad::getSemente(){
+return semente;
+}
+void ListaDEncad::setSemente(int s){
+semente = s;
+}
+void ListaDEncad::setAlfa(double a){
+alfa  = a;
+}
+double ListaDEncad::getAlfa(){
+return alfa;
 }
 ListaDEncad::~ListaDEncad()
 {

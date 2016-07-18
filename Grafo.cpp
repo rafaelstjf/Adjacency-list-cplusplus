@@ -1,7 +1,6 @@
 #include "Grafo.h"
-std::random_device rd;
-std::mt19937 engine(rd());
 using namespace std;
+
 /*
 ======================= Grafo(bool tipo) =======================
 	Construtor do grafo
@@ -577,7 +576,7 @@ Grafo* Grafo::grafoInduzido(int tam, int vet[])
         del[i] = true;
     for(int i = 0; i<tam; i++)
     {
-        if(vet[i] <= ultimo->getId())
+        if(existeIdNo(vet[i]))
         {
             del[vet[i]] = false;
         }
@@ -949,6 +948,7 @@ bool Grafo::verificadorViabilidade(ListaDEncad* conjSolucao)
     }
     Grafo* gInd = grafoInduzido(i+1, ElementosConj);
     numCC = gInd->contarComponentesConexas();
+
     if(numCC==conjSolucao->getTamanho())
     {
         delete gInd;
@@ -1000,28 +1000,42 @@ ListaDEncad* Grafo::algGulosoAleatoriedadeParam(double alfa)
     ListaAdjacencia* adjacentes;
     candidatos = heuristica();
     ListaDEncad* conjSolucao = new ListaDEncad();
-    ListaDEncad* conjuntoK = new ListaDEncad();
     int idAtual = 0, adjAtual = 0, grauAtual = 0, k = 0, tAlfa = 0;
     tAlfa = alfa*candidatos->getTamanho();
-    if(tAlfa!=0)
+    if(tAlfa == 0)
+        k = 0;
+    else
+        k = rand() % tAlfa;
+    candidatos->inicio();
+    for(int j=1; j<=candidatos->getTamanho(); j++)
     {
-        std::uniform_int_distribution<int> dist(0, tAlfa);
-        k = dist(engine);
+        if(j==k)
+        {
+            idAtual = candidatos->getIt()->getId();
+            grauAtual = candidatos->getIt()->getGrau();
+            conjSolucao->inserirOrdGrau(idAtual, grauAtual);
+            procurarIdNo(idAtual);
+            adjacentes = aux->getArestas();
+            if(adjacentes!=NULL)
+            {
+                adjacentes->inicio();
+                while(adjacentes->getAux()!=NULL)
+                {
+                    adjAtual = adjacentes->getAux()->getId();
+                    candidatos->removerId(adjAtual);
+                    adjacentes->proximaAresta();
+                }
+            }
+            candidatos->removerId(idAtual);
+            break;
+        }
+        candidatos->proxBloco();
     }
     candidatos->inicio();
-    for(int j =0; j<k; j++)
+    while(candidatos->getIt()!=NULL)
     {
-        if(candidatos->getIt()!=NULL)
-        {
-            conjuntoK->inserirOrdGrau(candidatos->getIt()->getId(), candidatos->getIt()->getGrau());
-            candidatos->proxBloco();
-        }
-    }
-    conjuntoK->inicio();
-    while(conjuntoK->getIt()!=NULL)
-    {
-        idAtual = conjuntoK->getIt()->getId();
-        grauAtual = conjuntoK->getIt()->getGrau();
+        idAtual = candidatos->getIt()->getId();
+        grauAtual = candidatos->getIt()->getGrau();
         procurarIdNo(idAtual);
         adjacentes = aux->getArestas();
         if(adjacentes!=NULL)
@@ -1030,49 +1044,88 @@ ListaDEncad* Grafo::algGulosoAleatoriedadeParam(double alfa)
             while(adjacentes->getAux()!=NULL)
             {
                 adjAtual = adjacentes->getAux()->getId();
-                conjuntoK->removerId(adjAtual);
+                candidatos->removerId(adjAtual);
                 adjacentes->proximaAresta();
             }
         }
         conjSolucao->inserirOrdGrau(idAtual, grauAtual);
-        conjuntoK->removerId(idAtual);
-        conjuntoK->inicio();
+        candidatos->removerId(idAtual);
+        candidatos->inicio();
     }
+    conjSolucao->setAlfa(alfa);
     conjSolucao->inicio();
-    int cont = 0;
-    while(conjSolucao->getIt()!=NULL)
-    {
-        cont++;
-        //cout << "ID: " << conjSolucao->getIt()->getId() << endl;
-        conjSolucao->proxBloco();
-    }
-    cout << "Tamanho do MIS: " << cont << endl;
     if(verificadorViabilidade(conjSolucao))
-        cout << "Solucao Viavel" << endl;
-    else
-        cout << "Solucao inviavel" << endl;
+        return conjSolucao;
+    else return NULL;
 
 }
-void Grafo::algGulosoAleatoriedadeAuto(int tam, int conjAlfa[])
+int Grafo::probRandom(int tam, double prob[])
 {
-    ListaDEncad* melhorSol;
+    int soma = 0;
+    int nRand = 0;
+    for(int i = 0; i<tam; i++)
+    {
+        soma+=prob[i]*1000;
+    }
+    nRand =  (soma > 0)?rand() % soma:0;
+    soma  = 0;
+    for(int i = 0; i<tam; i++)
+    {
+        soma+=prob[i]*1000;
+        if(nRand <= soma)
+            return i;
+    }
+}
+ListaDEncad* Grafo::algGulosoAleatoriedadeAuto(int tam, double conjAlfa[])
+{
+    ListaDEncad* melhorSol = new ListaDEncad();
+    ListaDEncad* solAtual;
     double prob[tam];
     double media[tam];
     double q[tam];
-    int maxIt = 500;
-    int itAt = 0;
+    int nAlfa[tam];
+    int maxIt = 1500, bIteracao = 100;
+    int itAt = 0, indice = 0,  gama  = 10;
+    double  alfaAt =0.0,  somQ = 0.0;
     for(int i = 0; i < tam; i++)
     {
-        prob[i] = 1/tam;
-        media[i] = 0;
-        q[i] = 0;
+        prob[i] = 1.0/tam;
+        media[i] = 0.0;
+        nAlfa[i] = 0;
+        q[i] = 0.0;
     }
-    bool bAtualizacao = true;
-    while(itAt <= maxIt)
+    for(itAt = 0; itAt<maxIt; itAt++)
     {
+        indice = probRandom(tam, prob);
+        alfaAt = conjAlfa[indice];
+        for(int i = 0; i< tam; i++)
+        {
+            if(conjAlfa[i] == alfaAt)
+                nAlfa[i]++;
+        }
+        solAtual = algGulosoAleatoriedadeParam(alfaAt);
+        if(solAtual->getTamanho() > melhorSol->getTamanho())
+            melhorSol = solAtual;
+        if(itAt%bIteracao == 0)
+        {
+            for(int i = 0; i<tam; i++)
+            {
 
+                if(nAlfa[i]!= 0)
+                    media[i] = melhorSol->getTamanho()/nAlfa[i];
+                if(media[i]!= 0.0)
+                    q[i] = pow(melhorSol->getTamanho()/media[i], gama);
+                for(int j = 0; j<tam; j++)
+                {
+                    somQ += q[j];
+                }
+                if(somQ!= 0.0)
+                    prob[i] = q[i]/somQ;
+                somQ = 0;
+            }
+        }
     }
-
+    return melhorSol;
 }
 Grafo::~Grafo()//destrutor
 {

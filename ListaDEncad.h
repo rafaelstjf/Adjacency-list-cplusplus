@@ -9,6 +9,8 @@ private:
     Bloco* ult;
     Bloco* it;
     int tamanho;
+    int semente;
+    double alfa;
 public:
     ListaDEncad();
     void inicio();
@@ -19,6 +21,10 @@ public:
     void proxBloco();
     void procurarId(int id);
     int getTamanho();
+    int getSemente();
+    void setSemente(int s);
+    void setAlfa(double a);
+    double getAlfa();
     Bloco* getIt();
     ~ListaDEncad();
 };

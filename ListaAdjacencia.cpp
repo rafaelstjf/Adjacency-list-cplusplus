@@ -63,11 +63,10 @@ void ListaAdjacencia::procurarIdAresta(int id)
 void ListaAdjacencia::inserir(int val, int peso)
 {
     Aresta* c = new Aresta();
+    c->setId(val);
+    c->setPeso(peso);
     if(pri == NULL)
     {
-
-        c->setId(val);
-        c->setPeso(peso);
         c->setProx(pri);
         c->setAnterior(NULL);
         pri = c;
@@ -75,18 +74,31 @@ void ListaAdjacencia::inserir(int val, int peso)
     }
     else
     {
-        if(!existeIdAresta(val))
+        if(val < ult->getId())
         {
             inicio();
-            while(aux->getProx() != NULL)
-            {
+            while(aux->getProx() != NULL && aux->getId() < val)
                 proximaAresta();
+            if(aux == pri)
+            {
+                c->setAnterior(NULL);
+                c->setProx(aux);
+                pri = c;
             }
-            c->setId(val);
-            c->setPeso(peso);
+            else
+            {
+                c->setAnterior(aux->getAnterior());
+                c->setProx(aux);
+                Aresta* aux2 = aux->getAnterior();
+                aux2->setProx(c);
+                aux->setAnterior(c);
+            }
+        }
+        else
+        {
             c->setProx(NULL);
-            c->setAnterior(aux);
-            aux->setProx(c);
+            c->setAnterior(ult);
+            ult->setProx(c);
             ult = c;
         }
     }

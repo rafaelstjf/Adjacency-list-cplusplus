@@ -9,7 +9,6 @@
 #include <stack>
 #include "ListaDEncad.h"
 #include <random>
-
 class Grafo
 {
 private:
@@ -27,6 +26,7 @@ private:
     void componentesConexasAux(No* n, int cc, int* componentes);
     int* fechoTransitivoAux(int id);
     bool verificadorViabilidade(ListaDEncad* conjSolucao);
+    int probRandom(int tam, double prob[]);
 public:
     Grafo(bool tipo);
     void inserirNo(int val);
@@ -56,7 +56,7 @@ public:
     ListaDEncad* heuristica();
     ListaDEncad* algoritmoGuloso();
     ListaDEncad* algGulosoAleatoriedadeParam(double alfa);
-    void algGulosoAleatoriedadeAuto(int tam,int conjAlfa[]);
+    ListaDEncad* algGulosoAleatoriedadeAuto(int tam,double conjAlfa[]);
     ~Grafo();//destrutor
 };
 #endif // GRAFO_H_INCLUDED
