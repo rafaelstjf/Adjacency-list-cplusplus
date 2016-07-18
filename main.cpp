@@ -758,6 +758,7 @@ int main(int argc, char * argv [])
                 }
             }
             conjSolucaoGuloso = grafo->algGulosoAleatoriedadeAuto(tam, vetorAlfas);
+            conjSolucaoGuloso->setSemente(seed);
             if(conjSolucaoGuloso!=NULL)
             {
                 cout << "Algoritmo construtivo guloso com aleatoriedade ajustada automaticamente.." <<endl;
