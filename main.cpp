@@ -4,6 +4,7 @@
 #include <string>
 #include <stdlib.h>
 #include <random>
+#include <time.h>
 #include "Grafo.h"
 using namespace std;
 std::fstream inputFile;
@@ -34,8 +35,9 @@ void menu()
     cout << "20 - Exibir o grafo transposto." << endl;
     cout << "21 - Algoritmo construtivo guloso para o conjunto independente maximo (MIS)." << endl;
     cout << "22 - Algoritmo construtivo guloso com aleatoriedade passada como parametro." << endl;
-    cout << "23 - Algoritmo construtivo guloso com aleatoriedade ajustada automaticamente." << endl;
-    cout << "24 - Sair." << endl;
+    cout << "23 - Algoritmo construtivo guloso com aleatoriedade passada como parametro com 500 iteracoes." << endl;
+    cout << "24 - Algoritmo construtivo guloso com aleatoriedade ajustada automaticamente." << endl;
+    cout << "25 - Sair." << endl;
 }
 Grafo* gerarGrafo()
 {
@@ -155,7 +157,7 @@ bool desejaSalvar()
     }
     if(op == 'S')
         return true;
-    else if(op == 'S')
+    else if(op == 'N')
         return false;
 }
 void limparTela()
@@ -172,7 +174,8 @@ int main(int argc, char * argv [])
     Grafo* grafo = NULL;
     int tamanho  = 0, opcaoEscolhida = -1;
     int id = 0, ini = 0, fim = 0, tam = -1, peso = -1, seed = 0;
-    double alfa = 0;
+    double alfa = 0.0, tempo = 0.0;
+    clock_t ticks[2];
     char help = '\0';
     int vet[tam];
     double vetorAlfas[tam];
@@ -694,12 +697,15 @@ int main(int argc, char * argv [])
             limparTela();
             break;
         case 21:
-
+            ticks[0] = clock();
             conjSolucaoGuloso = grafo->algoritmoGuloso();
+            ticks[1] = clock();
+            tempo = (ticks[1] - ticks[0]) * 1000.0 / CLOCKS_PER_SEC;
             if(conjSolucaoGuloso!=NULL)
             {
                 cout << "Exibindo o resultado do algoritmo." <<endl;
                 cout << "Tamanho do MIS: " << conjSolucaoGuloso->getTamanho() << endl;
+                cout << "Tempo gasto: " << tempo << " ms"  <<" | " << tempo/1000 << " s."<< endl;
             }
             else
                 return -2;
@@ -707,6 +713,7 @@ int main(int argc, char * argv [])
             {
                 outputFile << "Algoritmo construtivo guloso." << endl;
                 outputFile << "Tamanho do MIS: " << conjSolucaoGuloso->getTamanho() << endl;
+                outputFile << "Tempo gasto: " << tempo << " ms"  <<" | " << tempo/1000 << " s."<< endl;
             }
             delete conjSolucaoGuloso;
             limparTela();
@@ -719,13 +726,17 @@ int main(int argc, char * argv [])
                 cout << "Alfa invalido! Digite outro valor." << endl;
                 cin >> alfa;
             }
+            ticks[0] = clock();
             conjSolucaoGuloso = grafo->algGulosoAleatoriedadeParam(alfa);
+            ticks[1] = clock();
+            tempo = (ticks[1] - ticks[0]) * 1000.0 / CLOCKS_PER_SEC;
             conjSolucaoGuloso->setSemente(seed);
             if(conjSolucaoGuloso!=NULL)
             {
                 cout << "Algoritmo construtivo guloso com aleatoriedade passada como parametro." <<endl;
                 cout << "Tamanho do MIS: " << conjSolucaoGuloso->getTamanho() << endl;
                 cout << "Semente usada: " << conjSolucaoGuloso->getSemente() << endl;
+                cout << "Tempo gasto: " << tempo << " ms"  <<" | " << tempo/1000 << " s."<< endl;
             }
             else
                 return -2;
@@ -735,11 +746,45 @@ int main(int argc, char * argv [])
                 outputFile << "Tamanho do MIS: " << conjSolucaoGuloso->getTamanho() << endl;
                 outputFile << "Semente usada: " << conjSolucaoGuloso->getSemente() << endl;
                 outputFile << "Alfa usado: " << conjSolucaoGuloso->getAlfa() << endl;
+                outputFile << "Tempo gasto: " << tempo << " ms"  <<" | " << tempo/1000 << " s."<< endl;
             }
             delete conjSolucaoGuloso;
             limparTela();
             break;
         case 23:
+            cout << "Digite o valor do alfa: "<< endl;
+            cin >> alfa;
+            while(alfa < 0 || alfa > 1)
+            {
+                cout << "Alfa invalido! Digite outro valor." << endl;
+                cin >> alfa;
+            }
+            ticks[0] = clock();
+            conjSolucaoGuloso = grafo->algGulosoAleatoriedade500X(alfa);
+            ticks[1] = clock();
+            tempo = (ticks[1] - ticks[0]) * 1000.0 / CLOCKS_PER_SEC;
+            conjSolucaoGuloso->setSemente(seed);
+            if(conjSolucaoGuloso!=NULL)
+            {
+                cout << "Algoritmo construtivo guloso com aleatoriedade passada como parametro com 500 iteracoes." <<endl;
+                cout << "Tamanho do MIS: " << conjSolucaoGuloso->getTamanho() << endl;
+                cout << "Semente usada: " << conjSolucaoGuloso->getSemente() << endl;
+                cout << "Tempo gasto: " << tempo << " ms"  <<" | " << tempo/1000 << " s."<< endl;
+            }
+            else
+                return -2;
+            if(desejaSalvar())
+            {
+                outputFile << "Algoritmo construtivo guloso com aleatoriedade passada como parametro com 500 iteracoes." << endl;
+                outputFile << "Tamanho do MIS: " << conjSolucaoGuloso->getTamanho() << endl;
+                outputFile << "Semente usada: " << conjSolucaoGuloso->getSemente() << endl;
+                outputFile << "Alfa usado: " << conjSolucaoGuloso->getAlfa() << endl;
+                outputFile << "Tempo gasto: " << tempo << " ms"  <<" | " << tempo/1000 << " s."<< endl;
+            }
+            delete conjSolucaoGuloso;
+            limparTela();
+            break;
+        case 24:
             cout << "Digite o tamanho do conjunto de alfas." << endl;
             cin >> tam;
             while(tam < 0)
@@ -757,7 +802,10 @@ int main(int argc, char * argv [])
                     cin >> vetorAlfas[i];
                 }
             }
+            ticks[0] = clock();
             conjSolucaoGuloso = grafo->algGulosoAleatoriedadeAuto(tam, vetorAlfas);
+            ticks[1] = clock();
+            tempo = (ticks[1] - ticks[0]) * 1000.0 / CLOCKS_PER_SEC;
             conjSolucaoGuloso->setSemente(seed);
             if(conjSolucaoGuloso!=NULL)
             {
@@ -768,6 +816,7 @@ int main(int argc, char * argv [])
                 for(int i = 0; i<tam; i++)
                     cout << vetorAlfas[i] << endl;
                 cout << "Melhor Alfa: " << conjSolucaoGuloso->getAlfa() << endl;
+                cout << "Tempo gasto: " << tempo << " ms"  <<" | " << tempo/1000 << " s."<< endl;
             }
             else
                 return -2;
@@ -777,14 +826,17 @@ int main(int argc, char * argv [])
                 outputFile << "Tamanho do MIS: " << conjSolucaoGuloso->getTamanho() << endl;
                 outputFile << "Semente usada: " << conjSolucaoGuloso->getSemente() << endl;
                 outputFile << "Alfas usados: " << endl;
-                for(int i = 0; i<tam; i++)
+                for(int i = 0; i<tam; i++){
                     outputFile << vetorAlfas[i] << endl;
+                }
                 outputFile << "Melhor Alfa: " << conjSolucaoGuloso->getAlfa() << endl;
+                outputFile << "Tempo gasto: " << tempo << " ms"  <<" | " << tempo/1000 << " s."<< endl;
             }
             delete conjSolucaoGuloso;
             limparTela();
             break;
-        case 24:
+
+        case 25:
             outputFile.close();
             inputFile.close();
             delete grafo;

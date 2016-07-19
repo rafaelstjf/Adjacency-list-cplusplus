@@ -1084,7 +1084,7 @@ ListaDEncad* Grafo::algGulosoAleatoriedadeAuto(int tam, double conjAlfa[])
     double media[tam];
     double q[tam];
     int nAlfa[tam];
-    int maxIt = 1500, bIteracao = 100;
+    int maxIt = 1500, bIteracao = 100, numblocos = 0;
     int itAt = 0, indice = 0,  gama  = 10;
     double  alfaAt =0.0,  somQ = 0.0;
     for(int i = 0; i < tam; i++)
@@ -1108,22 +1108,50 @@ ListaDEncad* Grafo::algGulosoAleatoriedadeAuto(int tam, double conjAlfa[])
             melhorSol = solAtual;
         if(itAt%bIteracao == 0)
         {
+            numblocos++;
             for(int i = 0; i<tam; i++)
             {
 
                 if(nAlfa[i]!= 0)
                     media[i] = melhorSol->getTamanho()/nAlfa[i];
+                else
+                    media[i] = 0.0;
                 if(media[i]!= 0.0)
                     q[i] = pow(melhorSol->getTamanho()/media[i], gama);
+                else
+                    q[i] = 0.0;
                 for(int j = 0; j<tam; j++)
                 {
                     somQ += q[j];
                 }
                 if(somQ!= 0.0)
                     prob[i] = q[i]/somQ;
+                else
+                    prob[i] = 0;
                 somQ = 0;
             }
         }
+        else if(numblocos%2==0)
+        {
+            for(int i = 0; i < tam; i++)
+            {
+                prob[i] = 1.0/tam;
+                media[i] = 0.0;
+                q[i] = 0.0;
+            }
+        }
+    }
+    return melhorSol;
+}
+ListaDEncad* Grafo::algGulosoAleatoriedade500X(double alfa)
+{
+    ListaDEncad* melhorSol = new ListaDEncad();
+    ListaDEncad* solAtual = new ListaDEncad();
+    for(int i = 0; i<500; i++)
+    {
+        solAtual = algGulosoAleatoriedadeParam(alfa);
+        if(melhorSol == NULL || melhorSol->getTamanho() < solAtual->getTamanho())
+            melhorSol = solAtual;
     }
     return melhorSol;
 }

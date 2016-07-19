@@ -57,6 +57,7 @@ public:
     ListaDEncad* algoritmoGuloso();
     ListaDEncad* algGulosoAleatoriedadeParam(double alfa);
     ListaDEncad* algGulosoAleatoriedadeAuto(int tam,double conjAlfa[]);
+    ListaDEncad* algGulosoAleatoriedade500X(double alfa);
     ~Grafo();//destrutor
 };
 #endif // GRAFO_H_INCLUDED
