@@ -1,6 +1,5 @@
 #ifndef GRAFO_H_INCLUDED
 #define GRAFO_H_INCLUDED
-#define INF 100000
 #include <sstream>
 #include <string>
 #include <iostream>

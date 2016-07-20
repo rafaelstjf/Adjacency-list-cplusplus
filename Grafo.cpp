@@ -1066,8 +1066,9 @@ int Grafo::probRandom(int tam, double prob[])
     for(int i = 0; i<tam; i++)
     {
         soma+=prob[i]*1000;
+
     }
-    nRand =  (soma > 0)?rand() % soma:0;
+    nRand = (soma > 0)?rand() % soma:0;
     soma  = 0;
     for(int i = 0; i<tam; i++)
     {
@@ -1082,56 +1083,60 @@ ListaDEncad* Grafo::algGulosoAleatoriedadeAuto(int tam, double conjAlfa[])
     ListaDEncad* solAtual;
     double prob[tam];
     double media[tam];
+    int valoresEncontrados[tam];
     double q[tam];
     int nAlfa[tam];
-    int maxIt = 1500, bIteracao = 100, numblocos = 0;
-    int itAt = 0, indice = 0,  gama  = 10;
-    double  alfaAt =0.0,  somQ = 0.0;
+    int maxIt = 1500, bIteracao = 100, numblocos = 0, itAt = 0, indice = 0,  gama  = 10, emBloco = 1;
+    double  alfaAt = 0.0,  somQ = 0.0;
+    bool resetar = false;
     for(int i = 0; i < tam; i++)
     {
+        valoresEncontrados[i] = 0;
         prob[i] = 1.0/tam;
         media[i] = 0.0;
         nAlfa[i] = 0;
         q[i] = 0.0;
     }
-    for(itAt = 0; itAt<maxIt; itAt++)
+    for(itAt = 1; itAt<=maxIt; itAt++)
     {
         indice = probRandom(tam, prob);
         alfaAt = conjAlfa[indice];
-        for(int i = 0; i< tam; i++)
-        {
-            if(conjAlfa[i] == alfaAt)
-                nAlfa[i]++;
-        }
+        nAlfa[indice]++;
         solAtual = algGulosoAleatoriedadeParam(alfaAt);
+        valoresEncontrados[indice]+=solAtual->getTamanho();
         if(solAtual->getTamanho() > melhorSol->getTamanho())
             melhorSol = solAtual;
-        if(itAt%bIteracao == 0)
+        if(itAt == 100*emBloco)
         {
             numblocos++;
+            emBloco++;
+            resetar = true;
             for(int i = 0; i<tam; i++)
             {
 
                 if(nAlfa[i]!= 0)
-                    media[i] = melhorSol->getTamanho()/nAlfa[i];
-                else
-                    media[i] = 0.0;
-                if(media[i]!= 0.0)
-                    q[i] = pow(melhorSol->getTamanho()/media[i], gama);
-                else
-                    q[i] = 0.0;
-                for(int j = 0; j<tam; j++)
                 {
-                    somQ += q[j];
+                    media[i] = (valoresEncontrados[i]*1.0)/nAlfa[i];
+                    q[i] = (melhorSol->getTamanho()*1.0)/media[i];
                 }
-                if(somQ!= 0.0)
-                    prob[i] = q[i]/somQ;
                 else
-                    prob[i] = 0;
-                somQ = 0;
+                {
+                    media[i] = 0.0;
+                    q[i] = 0.0;
+                }
+            }
+            somQ = 0.0;
+            for(int i = 0; i<tam; i++)
+                somQ = q[i] + somQ;
+            for(int i = 0; i<tam; i++)
+            {
+                if(somQ!= 0.0)
+                    prob[i] = (q[i]*1.0)/somQ;
+                else
+                    prob[i] = 0.0;
             }
         }
-        else if(numblocos%2==0)
+        else if(numblocos%2==0 && resetar == true)
         {
             for(int i = 0; i < tam; i++)
             {
@@ -1139,6 +1144,7 @@ ListaDEncad* Grafo::algGulosoAleatoriedadeAuto(int tam, double conjAlfa[])
                 media[i] = 0.0;
                 q[i] = 0.0;
             }
+            resetar = false;
         }
     }
     return melhorSol;
