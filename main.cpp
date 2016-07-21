@@ -802,6 +802,7 @@ int main(int argc, char * argv [])
                     cin >> vetorAlfas[i];
                 }
             }
+
             ticks[0] = clock();
             conjSolucaoGuloso = grafo->algGulosoAleatoriedadeAuto(tam, vetorAlfas);
             ticks[1] = clock();
@@ -826,7 +827,8 @@ int main(int argc, char * argv [])
                 outputFile << "Tamanho do MIS: " << conjSolucaoGuloso->getTamanho() << endl;
                 outputFile << "Semente usada: " << conjSolucaoGuloso->getSemente() << endl;
                 outputFile << "Alfas usados: " << endl;
-                for(int i = 0; i<tam; i++){
+                for(int i = 0; i<tam; i++)
+                {
                     outputFile << vetorAlfas[i] << endl;
                 }
                 outputFile << "Melhor Alfa: " << conjSolucaoGuloso->getAlfa() << endl;

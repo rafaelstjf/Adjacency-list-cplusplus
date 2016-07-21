@@ -1099,18 +1099,24 @@ ListaDEncad* Grafo::algGulosoAleatoriedadeAuto(int tam, double conjAlfa[])
     }
     for(itAt = 1; itAt<=maxIt; itAt++)
     {
-        indice = probRandom(tam, prob);
-        alfaAt = conjAlfa[indice];
-        nAlfa[indice]++;
+        if(itAt <= tam)
+        {
+            alfaAt = conjAlfa[itAt-1];
+            nAlfa[itAt-1]++;
+        }
+        else
+        {
+            indice = probRandom(tam, prob);
+            alfaAt = conjAlfa[indice];
+            nAlfa[indice]++;
+        }
         solAtual = algGulosoAleatoriedadeParam(alfaAt);
         valoresEncontrados[indice]+=solAtual->getTamanho();
         if(solAtual->getTamanho() > melhorSol->getTamanho())
             melhorSol = solAtual;
         if(itAt == 100*emBloco)
         {
-            numblocos++;
             emBloco++;
-            resetar = true;
             for(int i = 0; i<tam; i++)
             {
 
@@ -1135,16 +1141,6 @@ ListaDEncad* Grafo::algGulosoAleatoriedadeAuto(int tam, double conjAlfa[])
                 else
                     prob[i] = 0.0;
             }
-        }
-        else if(numblocos%2==0 && resetar == true)
-        {
-            for(int i = 0; i < tam; i++)
-            {
-                prob[i] = 1.0/tam;
-                media[i] = 0.0;
-                q[i] = 0.0;
-            }
-            resetar = false;
         }
     }
     return melhorSol;
