@@ -207,7 +207,9 @@ int main(int argc, char * argv [])
     cout << "\t\tAluno: Rafael de Souza Terra - 201465581C" << endl;
     outputFile <<"\t\t\tTrabalho de Teoria dos grafos." << endl;
     outputFile << "\t\tAluno: Rafael de Souza Terra - 201465581C" << endl;
+    outputFile << "Nome do arquivo: " << argv[1] << endl;
     cout << "----------------------------------"<< endl;
+    cout << "Nome do arquivo: " << argv[1] << endl;
     cout << "Criando grafo a partir do arquivo. "<< endl;
     grafo = gerarGrafo();
     tamanho = grafo->ordemGrafo();
@@ -802,7 +804,7 @@ int main(int argc, char * argv [])
                     cin >> vetorAlfas[i];
                 }
             }
-
+            cout << "calculando..." << endl;
             ticks[0] = clock();
             conjSolucaoGuloso = grafo->algGulosoAleatoriedadeAuto(tam, vetorAlfas);
             ticks[1] = clock();
@@ -817,7 +819,9 @@ int main(int argc, char * argv [])
                 for(int i = 0; i<tam; i++)
                     cout << vetorAlfas[i] << endl;
                 cout << "Melhor Alfa: " << conjSolucaoGuloso->getAlfa() << endl;
-                cout << "Tempo gasto: " << tempo << " ms"  <<" | " << tempo/1000 << " s."<< endl;
+                cout << "Tempo gasto: " << tempo << " ms. ";
+                cout << tempo/1000 << " s."<< endl;
+
             }
             else
                 return -2;
@@ -827,12 +831,14 @@ int main(int argc, char * argv [])
                 outputFile << "Tamanho do MIS: " << conjSolucaoGuloso->getTamanho() << endl;
                 outputFile << "Semente usada: " << conjSolucaoGuloso->getSemente() << endl;
                 outputFile << "Alfas usados: " << endl;
-                for(int i = 0; i<tam; i++)
+                for(int j = 0; j<tam; j++)
                 {
-                    outputFile << vetorAlfas[i] << endl;
+                    outputFile << vetorAlfas[j] << endl;
                 }
                 outputFile << "Melhor Alfa: " << conjSolucaoGuloso->getAlfa() << endl;
-                outputFile << "Tempo gasto: " << tempo << " ms"  <<" | " << tempo/1000 << " s."<< endl;
+                outputFile << "Tempo gasto: " << tempo << " ms. ";
+                outputFile << tempo/1000 << " s."<< endl;
+
             }
             delete conjSolucaoGuloso;
             limparTela();
