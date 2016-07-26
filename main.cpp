@@ -6,6 +6,7 @@
 #include <random>
 #include <time.h>
 #include "Grafo.h"
+//teste
 using namespace std;
 std::fstream inputFile;
 std::fstream outputFile;
