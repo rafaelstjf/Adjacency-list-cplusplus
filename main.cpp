@@ -2,11 +2,9 @@
 #include <stdlib.h>
 #include <fstream>
 #include <string>
-#include <stdlib.h>
 #include <random>
 #include <time.h>
 #include "Grafo.h"
-//teste
 using namespace std;
 std::fstream inputFile;
 std::fstream outputFile;
@@ -53,30 +51,15 @@ Grafo* gerarGrafo()
     inputFile.clear(); //volta o estado para good
     inputFile.seekg(0, ios::beg); //volta ao inicio
     getline(inputFile, str);//pega a primeira linha do arquivo
-    while (str[i] != '\0') //enquanto nao chega ao fim do string
+    i = 0;
+    while (str[i] != 32 && str[i] != '\0') //enquanto nao chega ao fim do string
     {
-        if(str[i] == 32 || str[i + 1] == '\0')//verifica se o caractere é o espaco ou o final da linha
-        {
-            //limpa os numeros apos a parada
-            if( str[i + 1] == '\0')
-            {
-                temporaria[j] = str[i];
-                j++;
-            }
 
-            //converte o vetor char em int
-            tamanho = atoi(temporaria);
-            for (int ultN = j; temporaria[ultN] != '\0'; ultN++)//verifica se n tem mais numeros depois de J
-                temporaria[ultN] = '\0';
-            j = 0;//volta o indice do vetor temporario para 0
-        }
-        else if (str[i] != 32 || str[i + 1] != '\0')//for para passar os valores da string para o vetor char
-        {
-            temporaria[j] = str[i];
-            j++;
-        }
+        temporaria[i] = str[i];
         i++;//aumenta o indice da string
     }
+
+    tamanho = atoi(temporaria);
     // preencher e verificar se eh orientada
     cout << "O grafo eh orientado? [S/N]" << endl;
     cin >> opcao;
@@ -179,7 +162,7 @@ int main(int argc, char * argv [])
     clock_t ticks[2];
     char help = '\0';
     int vet[tam];
-    double vetorAlfas[tam];
+    double* vetorAlfas;
     Grafo* gComp = NULL;
     Grafo* gInduzido = NULL;
     Grafo* gTransp = NULL;
@@ -795,6 +778,7 @@ int main(int argc, char * argv [])
                 cout << "Tamanho invalido! Digite novamente." << endl;
                 cin >> tam;
             }
+            vetorAlfas = new double[tam];
             for(int i = 0; i<tam; i++)
             {
                 cout << "Digite o alfa." << endl;
@@ -813,7 +797,7 @@ int main(int argc, char * argv [])
             conjSolucaoGuloso->setSemente(seed);
             if(conjSolucaoGuloso!=NULL)
             {
-                cout << "Algoritmo construtivo guloso com aleatoriedade ajustada automaticamente.." <<endl;
+                cout << "Algoritmo construtivo guloso com aleatoriedade ajustada automaticamente." <<endl;
                 cout << "Tamanho do MIS: " << conjSolucaoGuloso->getTamanho() << endl;
                 cout << "Semente usada: " << conjSolucaoGuloso->getSemente() << endl;
                 cout << "Alfas usados: " << endl;
@@ -828,7 +812,7 @@ int main(int argc, char * argv [])
                 return -2;
             if(desejaSalvar())
             {
-                outputFile << "Algoritmo construtivo guloso com aleatoriedade ajustada automaticamente.." <<endl;
+                outputFile << "Algoritmo construtivo guloso com aleatoriedade ajustada automaticamente." <<endl;
                 outputFile << "Tamanho do MIS: " << conjSolucaoGuloso->getTamanho() << endl;
                 outputFile << "Semente usada: " << conjSolucaoGuloso->getSemente() << endl;
                 outputFile << "Alfas usados: " << endl;
@@ -843,8 +827,8 @@ int main(int argc, char * argv [])
             }
             delete conjSolucaoGuloso;
             limparTela();
+            delete []vetorAlfas;
             break;
-
         case 25:
             outputFile.close();
             inputFile.close();
