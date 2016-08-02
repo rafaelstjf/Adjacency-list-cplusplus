@@ -1114,7 +1114,7 @@ ListaDEncad* Grafo::algGulosoAleatoriedadeAuto(int tam, double conjAlfa[])
         valoresEncontrados[indice]+=solAtual->getTamanho();
         if(solAtual->getTamanho() > melhorSol->getTamanho())
             melhorSol = solAtual;
-        if(itAt == 100*emBloco)
+        if(itAt == bIteracao*emBloco)
         {
             emBloco++;
             for(int i = 0; i<tam; i++)
