@@ -2,7 +2,7 @@
 Trabalho de Teoria dos Grafos
 <br>
 Trabalho desenvolvido em <b>C++</b> para a disciplina de Teoria dos Grafos(DCC059).<br>
-<h2>Objetivo:<h2>
+<h2>Objetivo:</h2>
 O trabalho tem como objetivo a leitura e manipulação de arquivos de texto contendo grafos no formato:<br>
 Tamanho<br>
 V1 V2 <br>
