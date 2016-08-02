@@ -28,7 +28,7 @@ Ao executar o trabalho, deve-se passar como argumento o arquivo de entrada e o d
 11 - Retornar o grafo complementar. <br>
 12 - Verificar se uma dada aresta é ponte. <br>
 13 - Verificar se dois vértices sao adjacentes. <br>
-14 - Adicionar aresta/arco. <br>
+14 - Adicionar aresta/arco. <br>
 15 - Adicionar vértice. <br>
 16 - Remover aresta/arco.<br> 
 17 - Remover vértice. <br>
