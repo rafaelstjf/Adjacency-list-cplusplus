@@ -11,7 +11,7 @@ V1 V2 <br>
 <t>.<br>
 onde o par V1 V2 representa a aresta com início em V1 e fim em V2.<br>
 O trabalho ainda é capaz de resolver o problema do conjunto independente máximo por meio de um algoritmo construtivo guloso.<br>
-<h2>Como executar</h2>
+<h2>Como executar:</h2>
 Ao executar o trabalho, deve-se passar como argumento o arquivo de entrada e o de saída, ambos com a extensão e estes devem estar localizados na pasta do executável.<br>
 <h2>Funcionalidades:</h2>
  0 - Ajuda.<br>
