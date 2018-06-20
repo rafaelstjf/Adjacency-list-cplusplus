@@ -1,18 +1,18 @@
-# Trabalho-Teoria-dos-Grafos
-Trabalho de Teoria dos Grafos
+# Conjunto independente máximo
+
 <br>
-Trabalho desenvolvido em <b>C++</b> para a disciplina de Teoria dos Grafos(DCC059).<br>
+Algoritmo desenvolvido em <b>C++</b> para a disciplina de Teoria dos Grafos(DCC059).<br>
 <h2>Objetivo:</h2>
-O trabalho tem como objetivo a leitura e manipulação de arquivos de texto contendo grafos no formato:<br>
+O Algoritmo tem como objetivo a leitura e manipulação de arquivos de texto contendo grafos no formato:<br>
 Tamanho<br>
 V1 V2 <br>
 <t>.<br>
 <t>.<br>
 <t>.<br>
 onde o par V1 V2 representa a aresta com início em V1 e fim em V2.<br>
-O trabalho ainda é capaz de resolver o problema do conjunto independente máximo por meio de um algoritmo construtivo guloso.<br>
+Ele ainda é capaz de resolver o problema do conjunto independente máximo por meio de um algoritmo construtivo guloso.<br>
 <h2>Como executar:</h2>
-Ao executar o trabalho, deve-se passar como argumento o arquivo de entrada e o de saída, ambos com a extensão e estes devem estar localizados na pasta do executável.<br>
+Ao executar o algoritmo, deve-se passar como argumento o arquivo de entrada e o de saída, ambos com a extensão e estes devem estar localizados na pasta do executável.<br>
 <h2>Funcionalidades:</h2>
  0 - Ajuda.<br>
  1 - Exibir o grafo.<br>
